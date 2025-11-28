@@ -1,7 +1,9 @@
 import { Post } from '@/types';
-import PostCard from './PostCard';
+import PostCard from '../post/PostCard';
 import { currentUser } from '@/data/mock';
 import { Image, Smile, Calendar, BarChart2 } from 'lucide-react';
+
+import Avatar from '@/components/ui/Avatar';
 
 interface FeedProps {
     posts: Post[];
@@ -10,19 +12,22 @@ interface FeedProps {
 export default function Feed({ posts }: FeedProps) {
     return (
         <div className="flex-1 min-h-screen pb-20 sm:pb-0">
+
+
+
             {/* Mobile Header with Avatar */}
             <div className="sm:hidden sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 py-3 z-10 flex justify-between items-center">
                 <h1 className="text-xl font-bold text-gray-900">Home</h1>
-                <img src={currentUser.avatar} className="w-8 h-8 rounded-full bg-gray-200" alt="Profile" />
+                <Avatar src={currentUser.avatar} alt="Profile" size="sm" />
             </div>
 
             {/* Desktop Post Input */}
             <div className="p-4 border-b border-gray-100 hidden sm:block">
                 <div className="flex gap-4">
-                    <img
+                    <Avatar
                         src={currentUser.avatar}
                         alt={currentUser.name}
-                        className="w-10 h-10 rounded-full bg-gray-200 object-cover"
+                        size="md"
                     />
                     <div className="flex-1">
                         <input

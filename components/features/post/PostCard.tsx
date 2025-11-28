@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { Post } from '@/types';
 import { MessageCircle, Repeat2, Heart, BarChart2, Share, MoreHorizontal } from 'lucide-react';
+import Avatar from '@/components/ui/Avatar';
+import IconButton from '@/components/ui/IconButton';
 
 interface PostCardProps {
     post: Post;
@@ -12,10 +14,10 @@ export default function PostCard({ post, isDetail = false }: PostCardProps) {
         <article className={`flex gap-3 ${isDetail ? 'p-0' : 'p-4'}`}>
             {!isDetail && (
                 <div className="flex-shrink-0">
-                    <img
+                    <Avatar
                         src={post.author.avatar}
                         alt={post.author.name}
-                        className="w-10 h-10 rounded-full bg-gray-200 hover:opacity-90 transition-opacity object-cover"
+                        className="hover:opacity-90 transition-opacity"
                     />
                 </div>
             )}
@@ -29,19 +31,17 @@ export default function PostCard({ post, isDetail = false }: PostCardProps) {
                             <span className="text-gray-500">·</span>
                             <span className="text-gray-500 hover:underline">{post.timestamp}</span>
                         </div>
-                        <button className="p-1 text-gray-400 hover:text-[#8B5CF6] hover:bg-indigo-50 rounded-full transition-colors group">
-                            <MoreHorizontal className="w-4 h-4" />
-                        </button>
+                        <IconButton icon={MoreHorizontal} className="text-gray-400" />
                     </div>
                 )}
 
                 {isDetail && (
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center gap-3">
-                            <img
+                            <Avatar
                                 src={post.author.avatar}
                                 alt={post.author.name}
-                                className="w-12 h-12 rounded-full bg-gray-200 object-cover"
+                                size="lg"
                             />
                             <div>
                                 <div className="flex items-center gap-1">
@@ -53,13 +53,11 @@ export default function PostCard({ post, isDetail = false }: PostCardProps) {
                                 <p className="text-gray-500 text-sm">{post.author.handle}</p>
                             </div>
                         </div>
-                        <button className="p-2 text-gray-400 hover:text-[#8B5CF6] hover:bg-indigo-50 rounded-full transition-colors">
-                            <MoreHorizontal className="w-5 h-5" />
-                        </button>
+                        <IconButton icon={MoreHorizontal} size="md" className="text-gray-400" />
                     </div>
                 )}
 
-                <div className={`text-gray-900 whitespace-pre-wrap ${isDetail ? 'text-[22px] leading-8 font-medium' : 'text-[15px] mt-0.5'}`}>
+                <div className={`text-gray-900 whitespace-pre-wrap ${isDetail ? 'text-xl leading-relaxed font-medium' : 'text-[15px] mt-0.5'}`}>
                     {post.content}
                 </div>
 
@@ -100,39 +98,36 @@ export default function PostCard({ post, isDetail = false }: PostCardProps) {
                 )}
 
                 <div className={`flex items-center justify-between text-gray-500 ${isDetail ? 'py-3 border-b border-gray-100 justify-around' : 'mt-3 max-w-md'}`}>
-                    <button className="flex items-center gap-2 group hover:text-[#8B5CF6] transition-colors">
-                        <div className="p-2 rounded-full group-hover:bg-indigo-50 transition-colors">
-                            <MessageCircle className={`${isDetail ? 'w-6 h-6' : 'w-[18px] h-[18px]'}`} />
-                        </div>
-                        <span className={`text-xs ${isDetail ? 'hidden' : ''}`}>{post.comments}</span>
-                    </button>
+                    <IconButton
+                        icon={MessageCircle}
+                        label={!isDetail ? post.comments : undefined}
+                        size={isDetail ? 'md' : 'sm'}
+                    />
 
-                    <button className="flex items-center gap-2 group hover:text-green-500 transition-colors">
-                        <div className="p-2 rounded-full group-hover:bg-green-50 transition-colors">
-                            <Repeat2 className={`${isDetail ? 'w-6 h-6' : 'w-[18px] h-[18px]'}`} />
-                        </div>
-                        <span className={`text-xs ${isDetail ? 'hidden' : ''}`}>{post.reposts}</span>
-                    </button>
+                    <IconButton
+                        icon={Repeat2}
+                        label={!isDetail ? post.reposts : undefined}
+                        color="green"
+                        size={isDetail ? 'md' : 'sm'}
+                    />
 
-                    <button className="flex items-center gap-2 group hover:text-pink-500 transition-colors">
-                        <div className="p-2 rounded-full group-hover:bg-pink-50 transition-colors">
-                            <Heart className={`${isDetail ? 'w-6 h-6' : 'w-[18px] h-[18px]'}`} />
-                        </div>
-                        <span className={`text-xs ${isDetail ? 'hidden' : ''}`}>{post.likes}</span>
-                    </button>
+                    <IconButton
+                        icon={Heart}
+                        label={!isDetail ? post.likes : undefined}
+                        color="pink"
+                        size={isDetail ? 'md' : 'sm'}
+                    />
 
-                    <button className="flex items-center gap-2 group hover:text-[#8B5CF6] transition-colors">
-                        <div className="p-2 rounded-full group-hover:bg-indigo-50 transition-colors">
-                            <BarChart2 className={`${isDetail ? 'w-6 h-6' : 'w-[18px] h-[18px]'}`} />
-                        </div>
-                        <span className={`text-xs ${isDetail ? 'hidden' : ''}`}>{post.views}</span>
-                    </button>
+                    <IconButton
+                        icon={BarChart2}
+                        label={!isDetail ? post.views : undefined}
+                        size={isDetail ? 'md' : 'sm'}
+                    />
 
-                    <button className="flex items-center gap-2 group hover:text-[#8B5CF6] transition-colors">
-                        <div className="p-2 rounded-full group-hover:bg-indigo-50 transition-colors">
-                            <Share className={`${isDetail ? 'w-6 h-6' : 'w-[18px] h-[18px]'}`} />
-                        </div>
-                    </button>
+                    <IconButton
+                        icon={Share}
+                        size={isDetail ? 'md' : 'sm'}
+                    />
                 </div>
             </div>
         </article>

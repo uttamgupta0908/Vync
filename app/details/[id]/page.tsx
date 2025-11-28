@@ -1,6 +1,6 @@
 import { posts, currentUser } from '@/data/mock';
-import PostCard from '@/components/PostCard';
-import DetailsHeader from '@/components/DetailsHeader';
+import PostCard from '@/components/features/post/PostCard';
+import DetailsHeader from '@/components/layout/DetailsHeader';
 import { notFound } from 'next/navigation';
 import { Image, Smile, Calendar, BarChart2 } from 'lucide-react';
 

@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { users } from '@/data/mock';
+import Avatar from '@/components/ui/Avatar';
 
 export default function RightSidebar() {
     const pathname = usePathname();
@@ -41,7 +42,7 @@ export default function RightSidebar() {
                 {users.slice(1, 4).map((user) => (
                     <div key={user.id} className="px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors flex items-center justify-between gap-3">
                         <div className="flex items-center gap-3 min-w-0 flex-1">
-                            <img src={user.avatar} alt={user.name} className="w-9 h-9 rounded-full bg-gray-200 object-cover" />
+                            <Avatar src={user.avatar} alt={user.name} size="sm" className="w-9 h-9" />
                             <div className="min-w-0">
                                 <p className="font-bold text-gray-900 text-sm truncate">{user.name}</p>
                                 <p className="text-xs text-gray-500 truncate">{user.handle}</p>
@@ -64,7 +65,7 @@ export default function RightSidebar() {
                         <div key={i} className="flex items-center justify-between bg-gray-50 p-2 rounded-xl">
                             <div className="flex items-center gap-3">
                                 <div className="relative">
-                                    <img src={room.avatar} className="w-8 h-8 rounded-full" />
+                                    <Avatar src={room.avatar} alt={room.name} size="sm" className="w-8 h-8" />
                                     <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-red-500 border-2 border-white rounded-full"></div>
                                 </div>
                                 <div>

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Search, Users, MessageSquare, Bell, Bookmark, Trophy } from 'lucide-react';
 import { currentUser } from '@/data/mock';
+import Avatar from '@/components/ui/Avatar';
 
 const navItems = [
     { name: 'Home', href: '/', icon: Home },
@@ -15,18 +16,25 @@ const navItems = [
     { name: 'Rewards', href: '/rewards', icon: Trophy },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+    showLogo?: boolean;
+    fullHeight?: boolean;
+}
+
+export default function Sidebar({ showLogo = false, fullHeight = false }: SidebarProps) {
     const pathname = usePathname();
 
     return (
-        <aside className="w-[275px] h-screen fixed left-0 top-0 hidden sm:flex flex-col border-r border-gray-100 bg-white z-50">
-            {/* Fixed Header */}
-            <div className="px-8 py-6">
-                <h1 className="text-2xl font-bold text-[#8B5CF6]">Vync</h1>
-            </div>
+        <aside className={`w-[275px] fixed left-0 hidden sm:flex flex-col border-r border-gray-100 bg-white z-40 ${fullHeight ? 'h-screen top-0' : 'h-[calc(100vh-64px)] top-16'
+            }`}>
+            {showLogo && (
+                <div className="px-8 py-6">
+                    <h1 className="text-2xl font-bold text-[#8B5CF6]">Vync</h1>
+                </div>
+            )}
 
             {/* Scrollable Navigation */}
-            <nav className="flex-1 overflow-y-auto scrollbar-thin px-4 space-y-1 pb-4">
+            <nav className={`flex-1 overflow-y-auto scrollbar-thin px-4 space-y-1 ${showLogo ? 'pb-4' : 'py-4'}`}>
                 {navItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
@@ -34,8 +42,8 @@ export default function Sidebar() {
                             key={item.name}
                             href={item.href}
                             className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                                    ? 'bg-[#8B5CF6] text-white shadow-lg shadow-indigo-200'
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                ? 'bg-[#8B5CF6] text-white shadow-lg shadow-indigo-200'
+                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                 }`}
                         >
                             <div className="flex items-center gap-4">
@@ -64,13 +72,17 @@ export default function Sidebar() {
                 </div>
             </nav>
 
+
+
+
             {/* Fixed Footer */}
             <div className="p-4 border-t border-gray-100">
                 <button className="flex items-center gap-3 p-3 w-full rounded-xl hover:bg-gray-50 transition-colors text-left group">
-                    <img
+                    <Avatar
                         src={currentUser.avatar}
                         alt={currentUser.name}
-                        className="w-10 h-10 rounded-full bg-gray-200 object-cover ring-2 ring-transparent group-hover:ring-[#8B5CF6]/20 transition-all"
+                        size="md"
+                        className="ring-2 ring-transparent group-hover:ring-[#8B5CF6]/20 transition-all"
                     />
                     <div className="flex-1 min-w-0">
                         <p className="font-bold text-gray-900 text-sm truncate group-hover:text-[#8B5CF6] transition-colors">{currentUser.name}</p>
