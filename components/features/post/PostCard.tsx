@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import NextImage from 'next/image';
 import { Post } from '@/types';
 import { MessageCircle, Repeat2, Heart, BarChart2, Share, MoreHorizontal } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
@@ -63,7 +64,13 @@ export default function PostCard({ post, isDetail = false }: PostCardProps) {
 
                 {post.image && (
                     <div className={`mt-3 rounded-2xl overflow-hidden border border-gray-200 ${isDetail ? 'mt-6' : ''}`}>
-                        <img src={post.image} alt="Post content" className="w-full h-auto object-cover max-h-[500px]" />
+                        <NextImage
+                            src={post.image}
+                            alt="Post content"
+                            width={800}
+                            height={500}
+                            className="w-full h-auto object-cover max-h-[500px]"
+                        />
                     </div>
                 )}
 
