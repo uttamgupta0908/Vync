@@ -17,23 +17,41 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
 
     return (
         <>
-            {isHome && <HomeHeader />}
-            <div className="flex justify-center min-h-screen pb-14 sm:pb-0">
-                <div className="flex w-full max-w-[1265px] gap-6 px-4 sm:px-0">
-                    {isHome ? (
-                        <HomeLeftSidebar />
-                    ) : (
-                        <Sidebar
-                            showLogo={true}
-                            fullHeight={true}
-                        />
+            {/* Show Header on Home, Live, and Messages */}
+            {(isHome || pathname.includes('messages') || pathname.includes('live')) && <HomeHeader />}
+
+            <div className="flex justify-center min-h-screen pb-14 sm:pb-0 ">
+                <div className={`flex w-full gap-6  ${pathname.includes('live') || pathname.includes('messages') ? '' : 'max-w-[1265px] px-0'}`}>
+                    {/* Left Sidebar Logic */}
+                    {!pathname.includes('live') && !pathname.includes('messages') && (
+                        /* Use Sidebar with Logo for Communities (Dashboard Layout) */
+                        (pathname.includes('communities')) ? (
+                            <Sidebar showLogo={true} fullHeight={true} />
+                        ) : (
+                            /* Home uses HomeLeftSidebar, others might use standard Sidebar */
+                            isHome ? (
+                                <HomeLeftSidebar />
+                            ) : (
+                                <Sidebar
+                                    showLogo={true}
+                                    fullHeight={true}
+                                />
+                            )
+                        )
                     )}
 
-                    <main className={`flex-1 min-h-screen flex border-x border-gray-100 pt-0 ${isHome ? '' : 'sm:ml-[275px]'
+                    <main className={`flex-1 min-h-screen flex flex-col pt-0 ${isHome || pathname.includes('communities')
+                        ? ''
+                        : ''
+                        } ${isHome || pathname.includes('live') || pathname.includes('messages')
+                            ? ''
+                            : 'sm:ml-[275px]'
                         }`}>
                         {children}
                     </main>
-                    <RightSidebar />
+
+                    {/* Right Sidebar Logic */}
+                    {isHome && <RightSidebar />}
                 </div>
                 <BottomNav />
             </div>
