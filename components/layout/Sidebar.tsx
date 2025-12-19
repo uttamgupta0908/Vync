@@ -25,11 +25,11 @@ export default function Sidebar({ showLogo = false, fullHeight = false }: Sideba
     const pathname = usePathname();
 
     return (
-        <aside className={`w-[275px] fixed left-0 hidden sm:flex flex-col border-r border-gray-100 bg-white z-40 ${fullHeight ? 'h-screen top-0' : 'h-[calc(100vh-64px)] top-16'
+        <aside className={`w-[275px] fixed left-0 hidden sm:flex flex-col border-r border-neutral-300 bg-neutral-100 z-40 ${fullHeight ? 'h-screen top-0' : 'h-[calc(100vh-64px)] top-16'
             }`}>
             {showLogo && (
                 <div className="px-8 py-6">
-                    <h1 className="text-2xl font-bold text-[#8B5CF6]">Vync</h1>
+                    <h1 className="text-2xl font-bold text-primary-300">Vync</h1>
                 </div>
             )}
 
@@ -42,8 +42,8 @@ export default function Sidebar({ showLogo = false, fullHeight = false }: Sideba
                             key={item.name}
                             href={item.href}
                             className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                                ? 'bg-[#8B5CF6] text-white shadow-lg shadow-indigo-200'
-                                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                ? 'bg-primary-300 text-neutral-100 shadow-lg shadow-primary-300/20'
+                                : 'text-neutral-600 hover:bg-neutral-300 hover:text-neutral-800'
                                 }`}
                         >
                             <div className="flex items-center gap-4">
@@ -51,7 +51,7 @@ export default function Sidebar({ showLogo = false, fullHeight = false }: Sideba
                                 <span className={`font-medium text-[15px] ${isActive ? 'font-semibold' : ''}`}>{item.name}</span>
                             </div>
                             {item.badge && (
-                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-[#EF4444] text-white'
+                                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isActive ? 'bg-neutral-100/20 text-neutral-100' : 'bg-angry-500 text-neutral-100'
                                     }`}>
                                     {item.badge}
                                 </span>
@@ -60,11 +60,11 @@ export default function Sidebar({ showLogo = false, fullHeight = false }: Sideba
                     );
                 })}
 
-                <div className="pt-8 mt-6 border-t border-gray-50">
-                    <p className="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Your Communities</p>
+                <div className="pt-8 mt-6 border-t border-neutral-300">
+                    <p className="px-4 text-xs font-bold text-neutral-600 uppercase tracking-wider mb-4">Your Communities</p>
                     <div className="space-y-1">
                         {['Design Hub', 'Tech Talk', 'Fitness Journey', 'Gaming Zone'].map((community) => (
-                            <Link key={community} href="#" className="block px-4 py-2.5 text-[15px] font-medium text-gray-600 hover:text-[#8B5CF6] hover:bg-gray-50 rounded-lg transition-colors">
+                            <Link key={community} href="#" className="block px-4 py-2.5 text-[15px] font-medium text-neutral-600 hover:text-primary-300 hover:bg-neutral-300 rounded-lg transition-colors">
                                 {community}
                             </Link>
                         ))}
@@ -76,17 +76,17 @@ export default function Sidebar({ showLogo = false, fullHeight = false }: Sideba
 
 
             {/* Fixed Footer */}
-            <div className="p-4 border-t border-gray-100">
-                <button className="flex items-center gap-3 p-3 w-full rounded-xl hover:bg-gray-50 transition-colors text-left group">
+            <div className="p-4 border-t border-neutral-300">
+                <button className="flex items-center gap-3 p-3 w-full rounded-xl hover:bg-neutral-300 transition-colors text-left group">
                     <Avatar
                         src={currentUser.avatar}
                         alt={currentUser.name}
                         size="md"
-                        className="ring-2 ring-transparent group-hover:ring-[#8B5CF6]/20 transition-all"
+                        className="ring-2 ring-transparent group-hover:ring-primary-300/20 transition-all"
                     />
                     <div className="flex-1 min-w-0">
-                        <p className="font-bold text-gray-900 text-sm truncate group-hover:text-[#8B5CF6] transition-colors">{currentUser.name}</p>
-                        <p className="text-xs text-gray-500 truncate">{currentUser.handle}</p>
+                        <p className="font-bold text-neutral-800 text-sm truncate group-hover:text-primary-300 transition-colors">{currentUser.name}</p>
+                        <p className="text-xs text-neutral-600 truncate">{currentUser.handle}</p>
                     </div>
                 </button>
             </div>
