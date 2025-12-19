@@ -50,15 +50,15 @@ export default function Feed() {
     };
 
     return (
-        <div className="flex-1 min-h-screen pb-20 sm:pb-0">
+        <div className="flex-1 min-h-screen pb-20 sm:pb-0 pt-6 px-4">
             {/* Mobile Header with Avatar */}
-            <div className="sm:hidden sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-100 px-4 py-3 z-10 flex justify-between items-center">
-                <h1 className="text-xl font-bold text-gray-900">Home</h1>
+            <div className="sm:hidden sticky top-0 bg-neutral-100/80 backdrop-blur-md border-b border-neutral-300 px-4 py-3 z-10 flex justify-between items-center">
+                <h1 className="text-xl font-bold text-neutral-800">Home</h1>
                 <Avatar src={currentUser.avatar} alt="Profile" size="sm" />
             </div>
 
             {/* Desktop Post Input */}
-            <div className="p-4 border-b border-gray-100 hidden sm:block">
+            <div className="bg-neutral-100 rounded-2xl shadow-sm p-4 mb-4 hidden sm:block">
                 <div className="flex gap-4">
                     <Avatar
                         src={currentUser.avatar}
@@ -69,24 +69,24 @@ export default function Feed() {
                         <input
                             type="text"
                             placeholder="What's happening?"
-                            className="w-full text-xl placeholder-gray-400 border-none focus:ring-0 p-0 py-2 bg-transparent outline-none"
+                            className="w-full text-xl placeholder-neutral-500 border-none focus:ring-0 p-0 py-2 bg-transparent outline-none"
                         />
                         <div className="flex items-center justify-between mt-4">
-                            <div className="flex gap-2 text-indigo-500">
-                                <button className="p-2 hover:bg-indigo-50 rounded-full transition-colors">
+                            <div className="flex gap-2 text-primary-300">
+                                <button className="p-2 hover:bg-primary-100/10 rounded-full transition-colors">
                                     <ImageIcon className="w-5 h-5" />
                                 </button>
-                                <button className="p-2 hover:bg-indigo-50 rounded-full transition-colors">
+                                <button className="p-2 hover:bg-primary-100/10 rounded-full transition-colors">
                                     <BarChart2 className="w-5 h-5" />
                                 </button>
-                                <button className="p-2 hover:bg-indigo-50 rounded-full transition-colors">
+                                <button className="p-2 hover:bg-primary-100/10 rounded-full transition-colors">
                                     <Smile className="w-5 h-5" />
                                 </button>
-                                <button className="p-2 hover:bg-indigo-50 rounded-full transition-colors">
+                                <button className="p-2 hover:bg-primary-100/10 rounded-full transition-colors">
                                     <Calendar className="w-5 h-5" />
                                 </button>
                             </div>
-                            <button className="bg-[#8B5CF6] text-white px-6 py-2 rounded-full font-bold hover:bg-[#7C3AED] transition-colors shadow-md shadow-indigo-200">
+                            <button className="bg-primary-300 text-neutral-100 px-6 py-2 rounded-full font-bold hover:bg-primary-200 transition-colors shadow-md shadow-primary-300/20">
                                 Post
                             </button>
                         </div>
@@ -94,7 +94,7 @@ export default function Feed() {
                 </div>
             </div>
 
-            <div>
+            <div className="space-y-4">
                 {posts.map((post) => (
                     <PostCard key={post.id} post={post} />
                 ))}
@@ -102,7 +102,7 @@ export default function Feed() {
 
             {loading && (
                 <div className="flex justify-center p-8">
-                    <Loader2 className="w-8 h-8 animate-spin text-[#8B5CF6]" />
+                    <Loader2 className="w-8 h-8 animate-spin text-primary-300" />
                 </div>
             )}
 
@@ -111,7 +111,7 @@ export default function Feed() {
                     <button
                         onClick={loadMore}
                         disabled={loadingMore}
-                        className="flex items-center gap-2 px-6 py-2 text-[#8B5CF6] font-medium hover:bg-indigo-50 rounded-full transition-colors disabled:opacity-50"
+                        className="flex items-center gap-2 px-6 py-2 text-primary-300 font-medium hover:bg-primary-100/10 rounded-full transition-colors disabled:opacity-50"
                     >
                         {loadingMore ? (
                             <>
@@ -126,7 +126,7 @@ export default function Feed() {
             )}
 
             {!loading && !hasMore && posts.length > 0 && (
-                <div className="text-center p-8 text-gray-500">
+                <div className="text-center p-8 text-neutral-600">
                     You&apos;ve reached the end!
                 </div>
             )}
