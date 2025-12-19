@@ -22,7 +22,7 @@ export default function LayoutWrapper({
         <div className={`flex min-h-screen pb-14 sm:pb-0 ${isDetails ? '' : 'justify-center'}`}>
             <div className={`flex w-full ${isDetails ? '' : 'max-w-[1265px]'}`}>
                 {sidebar}
-                <main className={`flex-1 sm:ml-[275px] min-h-screen flex flex-col ${isDetails ? 'border-l border-gray-100' : 'border-x border-gray-100'}`}>
+                <main className={`flex-1 sm:ml-[275px] min-h-screen flex flex-col ${isDetails ? 'border-l border-neutral-300' : 'border-x border-neutral-300'}`}>
                     {children}
                 </main>
                 {rightSidebar}
