@@ -27,12 +27,12 @@ export default function PostCard({ post, isDetail = false }: PostCardProps) {
                 {!isDetail && (
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1 text-sm truncate">
-                            <span className="font-bold text-gray-900 hover:underline">{post.author.name}</span>
-                            <span className="text-gray-500">{post.author.handle}</span>
-                            <span className="text-gray-500">·</span>
-                            <span className="text-gray-500 hover:underline">{post.timestamp}</span>
+                            <span className="font-bold text-neutral-800 hover:underline">{post.author.name}</span>
+                            <span className="text-neutral-600">{post.author.handle}</span>
+                            <span className="text-neutral-600">·</span>
+                            <span className="text-neutral-600 hover:underline">{post.timestamp}</span>
                         </div>
-                        <IconButton icon={MoreHorizontal} className="text-gray-400" />
+                        <IconButton icon={MoreHorizontal} className="text-neutral-500" />
                     </div>
                 )}
 
@@ -46,24 +46,24 @@ export default function PostCard({ post, isDetail = false }: PostCardProps) {
                             />
                             <div>
                                 <div className="flex items-center gap-1">
-                                    <p className="font-bold text-gray-900 text-base hover:underline">{post.author.name}</p>
-                                    <span className="text-[#8B5CF6]">
+                                    <p className="font-bold text-neutral-800 text-base hover:underline">{post.author.name}</p>
+                                    <span className="text-primary-300">
                                         <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-1.9 14.7L6 12.6l1.5-1.5 2.6 2.6 6.4-6.4 1.5 1.5-7.9 7.9z"></path></svg>
                                     </span>
                                 </div>
-                                <p className="text-gray-500 text-sm">{post.author.handle}</p>
+                                <p className="text-neutral-600 text-sm">{post.author.handle}</p>
                             </div>
                         </div>
-                        <IconButton icon={MoreHorizontal} size="md" className="text-gray-400" />
+                        <IconButton icon={MoreHorizontal} size="md" className="text-neutral-500" />
                     </div>
                 )}
 
-                <div className={`text-gray-900 whitespace-pre-wrap ${isDetail ? 'text-xl leading-relaxed font-medium' : 'text-[15px] mt-0.5'}`}>
+                <div className={`text-neutral-800 whitespace-pre-wrap ${isDetail ? 'text-xl leading-relaxed font-medium' : 'text-[15px] mt-0.5'}`}>
                     {post.content}
                 </div>
 
                 {post.image && (
-                    <div className={`mt-3 rounded-2xl overflow-hidden border border-gray-200 ${isDetail ? 'mt-6' : ''}`}>
+                    <div className={`mt-3 rounded-2xl overflow-hidden border border-neutral-300 ${isDetail ? 'mt-6' : ''}`}>
                         <NextImage
                             src={post.image}
                             alt="Post content"
@@ -75,36 +75,36 @@ export default function PostCard({ post, isDetail = false }: PostCardProps) {
                 )}
 
                 {isDetail && (
-                    <div className="py-4 border-b border-gray-100 mt-4">
-                        <div className="flex items-center gap-1 text-gray-500 text-[15px]">
+                    <div className="py-4 border-b border-neutral-300 mt-4">
+                        <div className="flex items-center gap-1 text-neutral-600 text-[15px]">
                             <span className="hover:underline cursor-pointer">2:30 PM</span>
                             <span>·</span>
                             <span className="hover:underline cursor-pointer">Nov 28, 2024</span>
                             <span>·</span>
-                            <span className="font-bold text-gray-900">{post.views.toLocaleString()}</span>
+                            <span className="font-bold text-neutral-800">{post.views.toLocaleString()}</span>
                             <span>Views</span>
                         </div>
                     </div>
                 )}
 
                 {isDetail && (
-                    <div className="py-4 border-b border-gray-100 flex gap-6 text-sm">
+                    <div className="py-4 border-b border-neutral-300 flex gap-6 text-sm">
                         <div className="flex gap-1 hover:underline cursor-pointer">
-                            <span className="font-bold text-gray-900">{post.reposts}</span>
-                            <span className="text-gray-500">Reposts</span>
+                            <span className="font-bold text-neutral-800">{post.reposts}</span>
+                            <span className="text-neutral-600">Reposts</span>
                         </div>
                         <div className="flex gap-1 hover:underline cursor-pointer">
-                            <span className="font-bold text-gray-900">{post.likes}</span>
-                            <span className="text-gray-500">Likes</span>
+                            <span className="font-bold text-neutral-800">{post.likes}</span>
+                            <span className="text-neutral-600">Likes</span>
                         </div>
                         <div className="flex gap-1 hover:underline cursor-pointer">
-                            <span className="font-bold text-gray-900">12</span>
-                            <span className="text-gray-500">Quotes</span>
+                            <span className="font-bold text-neutral-800">12</span>
+                            <span className="text-neutral-600">Quotes</span>
                         </div>
                     </div>
                 )}
 
-                <div className={`flex items-center justify-between text-gray-500 ${isDetail ? 'py-3 border-b border-gray-100 justify-around' : 'mt-3 max-w-md'}`}>
+                <div className={`flex items-center justify-between text-neutral-500 ${isDetail ? 'py-3 border-b border-neutral-300 justify-around' : 'mt-3 max-w-md'}`}>
                     <IconButton
                         icon={MessageCircle}
                         label={!isDetail ? post.comments : undefined}
@@ -141,13 +141,13 @@ export default function PostCard({ post, isDetail = false }: PostCardProps) {
     );
 
     if (isDetail) {
-        return <div className="block border-b border-gray-100 cursor-default px-4 pt-4">{content}</div>;
+        return <div className="block border-b border-neutral-300 cursor-default px-4 pt-4">{content}</div>;
     }
 
     return (
         <Link
             href={`/details/${post.id}`}
-            className="block border-b border-gray-100 hover:bg-gray-50/50 transition-colors cursor-pointer"
+            className="block bg-neutral-100 rounded-2xl shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden"
         >
             {content}
         </Link>
