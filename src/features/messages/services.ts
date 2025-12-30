@@ -1,54 +1,45 @@
 import { get, post } from '@/src/shared/lib/api-client';
+import { MessageSchema, ConversationSchema, type Message, type Conversation } from '@/src/shared/lib/schemas';
+export { MessageSchema, ConversationSchema, type Message, type Conversation };
+import { z } from 'zod';
+
 
 /**
  * Messages API Services
  */
 
-export interface Message {
-    id: string;
-    senderId: string;
-    text: string;
-    timestamp: string;
-    isMe: boolean;
-}
-
-export interface Conversation {
-    id: string;
-    userName: string;
-    userAvatar: string;
-    lastMessage: string;
-    timestamp: string;
-    unreadCount: number;
-    online?: boolean;
-}
 
 /**
  * Fetch all conversations
  */
 export const fetchConversations = async (): Promise<Conversation[]> => {
-    return new Promise((resolve) => {
+    const data = await new Promise<any[]>((resolve) => {
         setTimeout(() => {
             resolve(mockConversations);
         }, 300);
     });
+
+    return z.array(ConversationSchema).parse(data);
 };
 
 /**
  * Fetch messages for a conversation
  */
 export const fetchMessages = async (conversationId: string): Promise<Message[]> => {
-    return new Promise((resolve) => {
+    const data = await new Promise<any[]>((resolve) => {
         setTimeout(() => {
             resolve(mockMessages[conversationId] || []);
         }, 300);
     });
+
+    return z.array(MessageSchema).parse(data);
 };
 
 /**
  * Send a message
  */
 export const sendMessage = async (conversationId: string, text: string): Promise<Message> => {
-    return new Promise((resolve) => {
+    const data = await new Promise<any>((resolve) => {
         setTimeout(() => {
             const newMessage: Message = {
                 id: Math.random().toString(36).substr(2, 9),
@@ -60,6 +51,8 @@ export const sendMessage = async (conversationId: string, text: string): Promise
             resolve(newMessage);
         }, 300);
     });
+
+    return MessageSchema.parse(data);
 };
 
 // Mock data

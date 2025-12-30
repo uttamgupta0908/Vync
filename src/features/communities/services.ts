@@ -1,25 +1,16 @@
 import { get, post } from '@/src/shared/lib/api-client';
+import { CommunitySchema, type Community } from '@/src/shared/lib/schemas';
+export { CommunitySchema, type Community };
+import { z } from 'zod';
 
-/**
- * Communities API Services
- */
 
-export interface Community {
-    id: string;
-    name: string;
-    description: string;
-    members: number;
-    image?: string;
-    category: string;
-    isJoined?: boolean;
-}
 
 /**
  * Fetch all communities
  */
 export const fetchCommunities = async (category?: string): Promise<Community[]> => {
     // Mock data for now
-    return new Promise((resolve) => {
+    const data = await new Promise<any[]>((resolve) => {
         setTimeout(() => {
             let filtered = mockCommunities;
             if (category && category !== 'All') {
@@ -28,6 +19,9 @@ export const fetchCommunities = async (category?: string): Promise<Community[]> 
             resolve(filtered);
         }, 300);
     });
+
+    // Contract Validation
+    return z.array(CommunitySchema).parse(data);
 };
 
 /**
