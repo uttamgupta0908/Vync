@@ -3,12 +3,15 @@
 import { usePathname } from 'next/navigation';
 import { users } from '@/src/shared/data/mock';
 import { Avatar } from '@/src/shared/ui';
-import { useAuth } from '@/src/shared/context/AuthContext';
+import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
+import { useAuth } from '@/src/features/auth/hooks/useAuth';
 
 export default function RightSidebar() {
     const pathname = usePathname();
     const isDetailsPage = pathname.includes('/details/');
-    const { isAuthenticated, openLoginModal } = useAuth();
+    const { user, isAuthenticated } = useAuth();
+    const { openLoginModal } = useAuthUI();
+
 
     const handleAction = (e: React.MouseEvent) => {
         e.preventDefault();
