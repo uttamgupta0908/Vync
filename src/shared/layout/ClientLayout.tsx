@@ -6,6 +6,8 @@ import Sidebar from './Sidebar';
 import RightSidebar from './RightSidebar';
 import BottomNav from './BottomNav';
 import HomeLeftSidebar from '../../features/feed/components/HomeLeftSidebar';
+import { AuthProvider } from '@/src/shared/context/AuthContext';
+import LoginModal from '@/src/features/auth/components/LoginModal';
 
 interface ClientLayoutProps {
     children: React.ReactNode;
@@ -16,7 +18,8 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
     const isHome = pathname === '/';
 
     return (
-        <>
+        <AuthProvider>
+            <LoginModal />
             {/* Show Header on Home, Live, and Messages */}
             {(isHome || pathname.includes('messages') || pathname.includes('live')) && <HomeHeader />}
 
@@ -55,6 +58,6 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
                 </div>
                 <BottomNav />
             </div>
-        </>
+        </AuthProvider>
     );
 }
