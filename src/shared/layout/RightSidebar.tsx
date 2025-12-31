@@ -3,10 +3,20 @@
 import { usePathname } from 'next/navigation';
 import { users } from '@/src/shared/data/mock';
 import { Avatar } from '@/src/shared/ui';
+import { useAuth } from '@/src/shared/context/AuthContext';
 
 export default function RightSidebar() {
     const pathname = usePathname();
     const isDetailsPage = pathname.includes('/details/');
+    const { isAuthenticated, openLoginModal } = useAuth();
+
+    const handleAction = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isAuthenticated) {
+            openLoginModal();
+        }
+    };
 
     if (isDetailsPage) {
         return null;
@@ -48,7 +58,10 @@ export default function RightSidebar() {
                                 <p className="text-xs text-neutral-600 truncate">{user.handle}</p>
                             </div>
                         </div>
-                        <button className="bg-primary-300 text-neutral-100 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-primary-200 transition-colors">
+                        <button
+                            onClick={handleAction}
+                            className="bg-primary-300 text-neutral-100 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-primary-200 transition-colors"
+                        >
                             Follow
                         </button>
                     </div>
@@ -73,7 +86,10 @@ export default function RightSidebar() {
                                     <p className="text-xs text-neutral-600">{room.listening} listening</p>
                                 </div>
                             </div>
-                            <button className="px-3 py-1 bg-primary-100/10 text-primary-300 text-xs font-bold rounded-lg hover:bg-primary-100/20">
+                            <button
+                                onClick={handleAction}
+                                className="px-3 py-1 bg-primary-100/10 text-primary-300 text-xs font-bold rounded-lg hover:bg-primary-100/20"
+                            >
                                 Join
                             </button>
                         </div>
