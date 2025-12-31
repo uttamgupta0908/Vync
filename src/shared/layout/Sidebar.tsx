@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Home, Search, Users, MessageSquare, Bell, Bookmark, Trophy } from 'lucide-react';
 import { currentUser } from '@/src/shared/data/mock';
 import { Avatar } from '@/src/shared/ui';
+import { useAuth } from '@/src/shared/context/AuthContext';
 
 const navItems = [
     { name: 'Home', href: '/', icon: Home },
@@ -23,6 +24,7 @@ interface SidebarProps {
 
 export default function Sidebar({ showLogo = false, fullHeight = false }: SidebarProps) {
     const pathname = usePathname();
+    const { isAuthenticated, openLoginModal } = useAuth();
 
     return (
         <aside className={`w-[275px] fixed left-0 hidden sm:flex flex-col border-r border-neutral-300 bg-neutral-100 z-40 ${fullHeight ? 'h-screen top-0' : 'h-[calc(100vh-64px)] top-16'
@@ -37,10 +39,20 @@ export default function Sidebar({ showLogo = false, fullHeight = false }: Sideba
             <nav className={`flex-1 overflow-y-auto scrollbar-thin px-4 space-y-1 ${showLogo ? 'pb-4' : 'py-4'}`}>
                 {navItems.map((item) => {
                     const isActive = pathname === item.href;
+                    const isProtected = ['/messages', '/notifications', '/communities', '/saved', '/rewards'].includes(item.href);
+
+                    const handleClick = (e: React.MouseEvent) => {
+                        if (isProtected && !isAuthenticated) {
+                            e.preventDefault();
+                            openLoginModal();
+                        }
+                    };
+
                     return (
                         <Link
                             key={item.name}
                             href={item.href}
+                            onClick={handleClick}
                             className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
                                 ? 'bg-primary-300 text-neutral-100 shadow-lg shadow-primary-300/20'
                                 : 'text-neutral-600 hover:bg-neutral-300 hover:text-neutral-800'
