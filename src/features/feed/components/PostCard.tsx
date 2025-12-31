@@ -7,6 +7,7 @@ import { MessageCircle, Repeat2, Heart, BarChart2, Share, MoreHorizontal } from 
 import { Avatar, IconButton } from '@/src/shared/ui';
 import { useLikePost } from '../hooks/useFeed';
 import { InlineSpinner } from '@/src/shared/ui';
+import { useAuth } from '@/src/shared/context/AuthContext';
 
 interface PostCardProps {
     post: Post;
@@ -15,14 +16,26 @@ interface PostCardProps {
 
 export default function PostCard({ post, isDetail = false }: PostCardProps) {
     const likeMutation = useLikePost();
+    const { isAuthenticated, openLoginModal } = useAuth();
 
-    const handleLike = (e: React.MouseEvent) => {
-        e.preventDefault(); // Don't navigate when clicking like
+    const handleAuthAction = (e: React.MouseEvent, action?: () => void) => {
+        e.preventDefault();
         e.stopPropagation();
 
-        likeMutation.mutate({
-            postId: post.id,
-            isLiked: post.isLiked || false,
+        if (!isAuthenticated) {
+            openLoginModal();
+            return;
+        }
+
+        action?.();
+    };
+
+    const handleLike = (e: React.MouseEvent) => {
+        handleAuthAction(e, () => {
+            likeMutation.mutate({
+                postId: post.id,
+                isLiked: post.isLiked || false,
+            });
         });
     };
 
@@ -127,7 +140,7 @@ export default function PostCard({ post, isDetail = false }: PostCardProps) {
                     </div>
                 )}
 
-                <div className={`flex items-center justify-between text-neutral-500 ${isDetail ? 'py-3 border-b border-neutral-300 justify-around' : 'mt-3 max-w-md'}`}>
+                {/* <div className={`flex items-center justify-between text-neutral-500 ${isDetail ? 'py-3 border-b border-neutral-300 justify-around' : 'mt-3 max-w-md'}`}>
                     <button onClick={(e) => e.stopPropagation()} className="flex items-center gap-2 group text-neutral-500 hover:text-primary-300 group-hover:bg-primary-100/10 p-2 rounded-full transition-colors">
                         <div className={`p-2 rounded-full transition-colors ${isDetail ? 'w-6 h-6' : 'w-[18px] h-[18px]'}`}>
                             <MessageCircle className={isDetail ? 'w-6 h-6' : 'w-[18px] h-[18px]'} />
@@ -166,7 +179,7 @@ export default function PostCard({ post, isDetail = false }: PostCardProps) {
                             />
                         )}
                         {!isDetail && (
-                            <span className={`text-sm ${post.isLiked ? 'text-pink-500' : 'text-neutral-600 group-hover:text-pink-500'}`}>
+                            <span className={`text-xs ${post.isLiked ? 'text-pink-500' : ' group-hover:text-pink-500'}`}>
                                 {post.likes}
                             </span>
                         )}
@@ -186,7 +199,83 @@ export default function PostCard({ post, isDetail = false }: PostCardProps) {
                             <Share className={isDetail ? 'w-6 h-6' : 'w-[18px] h-[18px]'} />
                         </div>
                     </button>
+                </div> */}
+                <div
+                    className={`flex items-center justify-between text-neutral-500  ${isDetail
+                        ? "py-3 border-b border-neutral-300 justify-around"
+                        : "mt-3 max-w-md "
+                        }`}
+                >
+                    {/* Comment */}
+                    <button
+                        onClick={(e) => handleAuthAction(e)}
+                        className="flex items-center gap-2 p-2 rounded-full transition-colors group hover:bg-primary-100/10"
+                    >
+                        <MessageCircle
+                            className={isDetail ? "w-6 h-6 group-hover:text-primary-300" : "w-[18px] h-[18px] group-hover:text-primary-300"}
+                        />
+                        {!isDetail && <span className="text-xs">{post.comments}</span>}
+                    </button>
+
+                    {/* Repost */}
+                    <button
+                        onClick={(e) => handleAuthAction(e)}
+                        className="flex items-center gap-2 p-2 rounded-full transition-colors group hover:bg-success-100"
+                    >
+                        <Repeat2
+                            className={isDetail ? "w-6 h-6 group-hover:text-success-500" : "w-[18px] h-[18px] group-hover:text-success-500"}
+                        />
+                        {!isDetail && <span className="text-xs">{post.reposts}</span>}
+                    </button>
+
+                    {/* Like */}
+                    <button
+                        onClick={handleLike}
+                        disabled={likeMutation.isPending}
+                        className="flex items-center gap-2 p-2 rounded-full hover:bg-pink-100 transition-colors group disabled:opacity-50"
+                    >
+                        {likeMutation.isPending ? (
+                            <InlineSpinner size="sm" />
+                        ) : (
+                            <Heart
+                                className={`w-5 h-5 ${post.isLiked
+                                    ? "fill-pink-500 text-pink-500"
+                                    : "text-neutral-500 group-hover:text-pink-500"
+                                    }`}
+                            />
+                        )}
+                        {!isDetail && (
+                            <span
+                                className={`text-xs ${post.isLiked ? "text-pink-500" : "group-hover:text-pink-500"
+                                    }`}
+                            >
+                                {post.likes}
+                            </span>
+                        )}
+                    </button>
+
+                    {/* Views */}
+                    <button
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex items-center gap-2 p-2 rounded-full transition-colors group hover:bg-primary-100/10"
+                    >
+                        <BarChart2
+                            className={isDetail ? "w-6 h-6 group-hover:text-primary-300" : "w-[18px] h-[18px] group-hover:text-primary-300"}
+                        />
+                        {!isDetail && <span className="text-xs">{post.views}</span>}
+                    </button>
+
+                    {/* Share */}
+                    <button
+                        onClick={(e) => handleAuthAction(e)}
+                        className="flex items-center gap-2 p-2 rounded-full transition-colors group hover:bg-primary-100/10"
+                    >
+                        <Share
+                            className={isDetail ? "w-6 h-6 group-hover:text-primary-300" : "w-[18px] h-[18px] group-hover:text-primary-300"}
+                        />
+                    </button>
                 </div>
+
             </div>
         </article>
     );
