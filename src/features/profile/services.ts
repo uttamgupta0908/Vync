@@ -26,7 +26,11 @@ export const fetchUserProfile = async (username: string): Promise<UserProfile> =
     // Mock data for now
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve(mockUserProfile);
+            if (username === 'you') {
+                resolve(mockCurrentUserProfile);
+            } else {
+                resolve(mockUserProfile);
+            }
         }, 300);
     });
 };
@@ -151,3 +155,18 @@ const mockUserPosts: ProfilePost[] = [
         isLiked: false,
     },
 ];
+
+const mockCurrentUserProfile: UserProfile = {
+    id: '1',
+    name: 'You',
+    handle: '@you',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop',
+    bio: 'Digital explorer and tech enthusiast. Building the future one pixel at a time. 🚀',
+    followers: 120,
+    following: 45,
+    location: 'New York, NY',
+    joinDate: 'January 2024',
+    verified: false,
+    posts: 12,
+    rewardPoints: 500,
+};
