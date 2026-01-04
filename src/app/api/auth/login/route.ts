@@ -43,14 +43,15 @@ export async function POST(request: Request) {
             access, // Optionally return to client if needed by legacy code, but preferably rely on cookies
             refresh 
         });
-    } catch (error: any) {
-        console.error('Login error:', error.response?.data || error.message);
+    } catch (error: unknown) {
+        const err = error as any;
+        console.error('Login error:', err.response?.data || err.message);
         return NextResponse.json(
             { 
                 error: 'Authentication failed',
-                details: error.response?.data || error.message 
+                details: err.response?.data || err.message 
             },
-            { status: error.response?.status || 500 }
+            { status: err.response?.status || 500 }
         );
     }
 }
