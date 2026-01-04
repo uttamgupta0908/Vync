@@ -1,10 +1,13 @@
 import Link from 'next/link';
 import { currentUser } from '@/src/shared/data/mock';
 import { Avatar } from '@/src/shared/ui';
-import { useAuth } from '@/src/shared/context/AuthContext';
-
+import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
+import { useAuth } from '@/src/features/auth/hooks/useAuth';
 export default function HomeLeftSidebar() {
-    const { isAuthenticated, user, openLoginModal } = useAuth();
+    // const { isAuthenticated, user, openLoginModal } = useAuthUI();
+    const { user, isAuthenticated, isLoading } = useAuth();
+    const { openLoginModal } = useAuthUI();
+
 
     const handleJoinClick = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -14,35 +17,60 @@ export default function HomeLeftSidebar() {
         }
     };
 
+    const formatCount = (value?: number | null) => {
+        if (value == null) return '0'
+        if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`
+        if (value >= 1_000) return `${(value / 1_000).toFixed(1)}k`
+        return value.toString()
+    }
+
     return (
         <aside className="w-[230px] hidden sm:flex flex-col gap-4 sticky top-16 h-fit left-4 pt-6">
             {/* Profile Card or Guest Card */}
             <div className="bg-neutral-100 rounded-2xl border border-neutral-300 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300 p-5">
-                {isAuthenticated ? (
+                {isLoading ? (
+                    <div className="space-y-4 animate-pulse">
+                        <div className="flex items-center gap-3">
+                            <div className="w-16 h-16 bg-neutral-200 rounded-full" />
+                            <div className="flex-1 space-y-2">
+                                <div className="h-4 bg-neutral-200 rounded w-24" />
+                                <div className="h-3 bg-neutral-200 rounded w-16" />
+                            </div>
+                        </div>
+                        <div className="flex justify-around pt-3 border-t border-neutral-200">
+                            {[1, 2, 3].map(i => (
+                                <div key={i} className="flex flex-col items-center gap-1">
+                                    <div className="h-4 bg-neutral-200 rounded w-8" />
+                                    <div className="h-3 bg-neutral-200 rounded w-10" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ) : isAuthenticated ? (
                     <>
                         <div className="flex items-center gap-3 mb-4">
                             <Avatar
-                                src={user?.avatar || currentUser.avatar}
-                                alt={user?.name || currentUser.name}
+                                src={user?.avatar_url || currentUser.avatar_url || ''}
+                                alt={user?.full_name || currentUser.full_name || 'User'}
                                 className="w-16 h-16"
                             />
                             <div className="flex-1 min-w-0">
-                                <h2 className="text-base font-bold text-neutral-800 truncate">{user?.name || currentUser.name}</h2>
-                                <p className="text-xs text-neutral-600 truncate">{user?.handle || currentUser.handle}</p>
+                                <h2 className="text-base font-bold text-neutral-800 truncate">{user?.full_name || currentUser.full_name}</h2>
+                                <p className="text-xs text-neutral-600 truncate">@{user?.username || currentUser.username}</p>
                             </div>
                         </div>
 
                         <div className="flex justify-around w-full pt-3 border-t border-neutral-200">
                             <div className="flex flex-col items-center">
-                                <span className="font-bold text-neutral-800 text-base">142</span>
+                                <span className="font-bold text-neutral-800 text-base">  {formatCount(user?.posts_count)}</span>
                                 <span className="text-xs text-neutral-500">Posts</span>
                             </div>
                             <div className="flex flex-col items-center">
-                                <span className="font-bold text-neutral-800 text-base">2.1k</span>
+                                <span className="font-bold text-neutral-800 text-base">{formatCount(user?.followers_count)}</span>
                                 <span className="text-xs text-neutral-500">Followers</span>
                             </div>
                             <div className="flex flex-col items-center">
-                                <span className="font-bold text-neutral-800 text-base">890</span>
+                                <span className="font-bold text-neutral-800 text-base">{formatCount(user?.following_count)}</span>
                                 <span className="text-xs text-neutral-500">Following</span>
                             </div>
                         </div>

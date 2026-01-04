@@ -9,7 +9,7 @@ import { useAuth } from '@/src/features/auth/hooks/useAuth';
 export default function RightSidebar() {
     const pathname = usePathname();
     const isDetailsPage = pathname.includes('/details/');
-    const { user, isAuthenticated } = useAuth();
+    const { isAuthenticated } = useAuth();
     const { openLoginModal } = useAuthUI();
 
 
@@ -55,10 +55,10 @@ export default function RightSidebar() {
                 {users.slice(1, 4).map((user) => (
                     <div key={user.id} className="px-4 py-3 hover:bg-neutral-400 cursor-pointer transition-colors flex items-center justify-between gap-3">
                         <div className="flex items-center gap-3 min-w-0 flex-1">
-                            <Avatar src={user.avatar} alt={user.name} size="sm" className="w-9 h-9" />
+                            <Avatar src={user.avatar_url || ''} alt={user.full_name || 'User'} size="sm" className="w-9 h-9" />
                             <div className="min-w-0">
-                                <p className="font-bold text-neutral-800 text-sm truncate">{user.name}</p>
-                                <p className="text-xs text-neutral-600 truncate">{user.handle}</p>
+                                <p className="font-bold text-neutral-800 text-sm truncate">{user.full_name}</p>
+                                <p className="text-xs text-neutral-600 truncate">@{user.username}</p>
                             </div>
                         </div>
                         <button
@@ -75,13 +75,13 @@ export default function RightSidebar() {
                 <h2 className="text-base font-bold text-neutral-800 mb-3">Live Rooms</h2>
                 <div className="space-y-3">
                     {[
-                        { name: 'Tech Talk', listening: 24, avatar: users[1].avatar },
-                        { name: 'Design Chat', listening: 12, avatar: users[2].avatar }
+                        { name: 'Tech Talk', listening: 24, avatar_url: users[1].avatar_url },
+                        { name: 'Design Chat', listening: 12, avatar_url: users[2].avatar_url }
                     ].map((room, i) => (
                         <div key={i} className="flex items-center justify-between hover:bg-neutral-400 cursor-pointer transition-colors p-2 rounded-xl">
                             <div className="flex items-center gap-3">
                                 <div className="relative">
-                                    <Avatar src={room.avatar} alt={room.name} size="sm" className="w-8 h-8" />
+                                    <Avatar src={room.avatar_url || ''} alt={room.name} size="sm" className="w-8 h-8" />
                                     <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-angry-500 border-2 border-neutral-100 rounded-full"></div>
                                 </div>
                                 <div>

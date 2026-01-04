@@ -1,5 +1,4 @@
-import { get, post } from '@/src/shared/lib/api-client';
-import { CommunitySchema, type Community } from '@/src/shared/lib/schemas';
+import { CommunitySchema, type Community } from '@/src/shared/contracts/schemas';
 export { CommunitySchema, type Community };
 import { z } from 'zod';
 
@@ -10,7 +9,7 @@ import { z } from 'zod';
  */
 export const fetchCommunities = async (category?: string): Promise<Community[]> => {
     // Mock data for now
-    const data = await new Promise<any[]>((resolve) => {
+    const data = await new Promise<Community[]>((resolve) => {
         setTimeout(() => {
             let filtered = mockCommunities;
             if (category && category !== 'All') {
@@ -27,7 +26,7 @@ export const fetchCommunities = async (category?: string): Promise<Community[]> 
 /**
  * Join a community
  */
-export const joinCommunity = async (communityId: string): Promise<void> => {
+export const joinCommunity = async (_communityId: string): Promise<void> => {
     return new Promise((resolve) => {
         setTimeout(resolve, 300);
     });
@@ -36,7 +35,7 @@ export const joinCommunity = async (communityId: string): Promise<void> => {
 /**
  * Leave a community
  */
-export const leaveCommunity = async (communityId: string): Promise<void> => {
+export const leaveCommunity = async (_communityId: string): Promise<void> => {
     return new Promise((resolve) => {
         setTimeout(resolve, 300);
     });

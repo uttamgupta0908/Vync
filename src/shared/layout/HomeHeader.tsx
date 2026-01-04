@@ -5,10 +5,13 @@ import Link from 'next/link';
 import { Search, Bell, Plus, LogOut, User, Settings, ChevronDown } from 'lucide-react';
 import { currentUser } from '@/src/shared/data/mock';
 import { Avatar } from '@/src/shared/ui';
-import { useAuth } from '@/src/shared/context/AuthContext';
+import { useAuth, useLogout } from '@/src/features/auth/hooks/useAuth';
+import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
 
 export default function HomeHeader() {
-    const { isAuthenticated, user, openLoginModal, logout } = useAuth();
+    const { isAuthenticated, user, isLoading } = useAuth();
+    const { openLoginModal } = useAuthUI();
+    const { mutate: logout } = useLogout();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -107,15 +110,17 @@ export default function HomeHeader() {
                         <Plus className="w-5 h-5" />
                     </button>
 
-                    {isAuthenticated ? (
+                    {isLoading ? (
+                        <div className="w-9 h-9 bg-neutral-200 rounded-full animate-pulse" />
+                    ) : isAuthenticated ? (
                         <div className="relative" ref={menuRef}>
                             <button
                                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                                 className="flex items-center gap-2 p-1 pr-2 rounded-full hover:bg-neutral-200 transition-colors border border-transparent hover:border-neutral-300"
                             >
                                 <Avatar
-                                    src={user?.avatar || currentUser.avatar}
-                                    alt={user?.name || currentUser.name}
+                                    src={user?.avatar_url || currentUser.avatar_url || ''}
+                                    alt={user?.full_name || currentUser.full_name || 'User'}
                                     className="w-8 h-8 sm:w-9 sm:h-9 border border-neutral-300"
                                 />
                                 <ChevronDown className={`w-4 h-4 text-neutral-500 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />
@@ -125,8 +130,8 @@ export default function HomeHeader() {
                             {isMenuOpen && (
                                 <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl border border-neutral-200 overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right">
                                     <div className="p-4 border-b border-neutral-100 bg-neutral-50/50">
-                                        <p className="font-bold text-neutral-800 truncate">{user?.name}</p>
-                                        <p className="text-xs text-neutral-500 truncate">{user?.handle || '@user'}</p>
+                                        <p className="font-bold text-neutral-800 truncate">{user?.full_name}</p>
+                                        <p className="text-xs text-neutral-500 truncate"> @{user?.username || 'user'}</p>
                                     </div>
 
                                     <div className="p-2">

@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { User } from '@/src/shared/contracts/schemas';
 import { fetchUserProfile, fetchUserPosts, followUser, unfollowUser } from '../services';
 import { queryKeys } from '@/src/shared/lib/query-client';
 
@@ -47,11 +48,13 @@ export function useFollowUser() {
             const previousProfile = queryClient.getQueryData(queryKeys.userProfile(username));
 
             // Optimistically update to the new value
-            queryClient.setQueryData(queryKeys.userProfile(username), (old: any) => {
+            queryClient.setQueryData(queryKeys.userProfile(username), (old: User | undefined) => {
                 if (!old) return old;
+                const currentFollowers = old.followers_count ?? 0;
                 return {
                     ...old,
-                    followers: isFollowing ? old.followers - 1 : old.followers + 1,
+                    followers_count: isFollowing ? Math.max(0, currentFollowers - 1) : currentFollowers + 1,
+                    is_following: !isFollowing
                 };
             });
 

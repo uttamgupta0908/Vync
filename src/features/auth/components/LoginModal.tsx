@@ -2,22 +2,54 @@
 
 import { useState } from 'react';
 import { X, Loader2 } from 'lucide-react';
-import { useAuth } from '@/src/shared/context/AuthContext';
+import { useAuth } from '@/src/features/auth/hooks/useAuth';
+import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
+import { authService } from '../services';
 
 export default function LoginModal() {
-    const { isLoginModalOpen, closeLoginModal, login, isLoading } = useAuth();
+    const { loginAsync, isLoggingIn } = useAuth();
+    const { isLoginModalOpen, closeLoginModal } = useAuthUI();
     const [isSignUp, setIsSignUp] = useState(true);
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: ''
+        name: 'uttam',
+        email: 'uttamgupta0908@gmail.com',
+        password: 'Uttam@0908'
     });
 
     if (!isLoginModalOpen) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        await login(formData.email, formData.password);
+        try {
+            if (isSignUp) {
+                // Register
+                await authService.register({
+                    email: formData.email.trim().toLowerCase(),
+                    password: formData.password.trim(),
+                    full_name: formData.name.trim(),
+                    username: formData.email.trim().split('@')[0],
+                });
+                // Auto login after register or show success message?
+                // API returns success message usually. Let's try loggin in automatically or switching to login.
+                // For now, let's just alert or switch to login
+                setIsSignUp(false);
+                alert('Registration successful! Please sign in.');
+            } else {
+                // Login
+                await loginAsync({
+                    email: formData.email.trim().toLowerCase(),
+                    password: formData.password.trim()
+                });
+                closeLoginModal();
+            }
+        } catch (error: any) {
+            console.error('Auth failed:', error);
+            // Show error to user
+            const errorMsg = error.response?.data?.details
+                ? JSON.stringify(error.response.data.details)
+                : (error.response?.data?.error || 'Authentication failed');
+            alert(errorMsg);
+        }
     };
 
     return (
@@ -79,10 +111,10 @@ export default function LoginModal() {
 
                         <button
                             type="submit"
-                            disabled={isLoading}
+                            disabled={isLoggingIn}
                             className="w-full py-2.5 px-4 bg-primary-300 hover:bg-primary-200 text-neutral-100 font-bold rounded-xl text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            {isLoading ? (
+                            {isLoggingIn ? (
                                 <Loader2 className="w-4 h-4 animate-spin" />
                             ) : (
                                 isSignUp ? 'Sign Up' : 'Sign In'
@@ -102,7 +134,7 @@ export default function LoginModal() {
                     <div className="space-y-2">
                         <button
                             type="button"
-                            onClick={() => login()}
+                            onClick={() => alert('Facebook login not implemented yet')}
                             className="w-full py-2.5 px-4 bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl text-sm transition-colors flex items-center justify-center gap-2"
                         >
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -113,7 +145,7 @@ export default function LoginModal() {
 
                         <button
                             type="button"
-                            onClick={() => login()}
+                            onClick={() => alert('Google login not implemented yet')}
                             className="w-full py-2.5 px-4 bg-white border border-neutral-200 hover:bg-neutral-50 text-neutral-800 font-bold rounded-xl text-sm transition-colors flex items-center justify-center gap-2"
                         >
                             <svg className="w-4 h-4" viewBox="0 0 24 24">

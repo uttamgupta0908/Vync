@@ -1,23 +1,10 @@
 import Link from 'next/link';
 import { MessageCircle, Heart } from 'lucide-react';
 import Avatar from '@/src/shared/ui/Avatar';
-
-interface ProfilePost {
-    id: string;
-    title: string;
-    description: string;
-    image?: string;
-    author: {
-        name: string;
-        avatar: string;
-    };
-    timestamp: string;
-    comments: number;
-    likes: number;
-}
+import { Post } from '@/src/shared/types';
 
 interface ProfilePostsGridProps {
-    posts: ProfilePost[];
+    posts: Post[];
 }
 
 export default function ProfilePostsGrid({ posts }: ProfilePostsGridProps) {
@@ -29,33 +16,48 @@ export default function ProfilePostsGrid({ posts }: ProfilePostsGridProps) {
                     href={`/details/${post.id}`}
                     className="bg-neutral-100 rounded-[32px] shadow-sm hover:shadow-md transition-all overflow-hidden group cursor-pointer border border-neutral-300/50"
                 >
-                    {post.image && (
-                        <div className="aspect-[4/3] overflow-hidden bg-neutral-200">
-                            <img
-                                src={post.image}
-                                alt={post.title}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
-                            />
+                    {post.media && post.media.length > 0 && (
+                        <div className="aspect-[4/3] overflow-hidden bg-neutral-200 relative">
+                            {post.media[0].type === 'image' ? (
+                                <img
+                                    src={post.media[0].url}
+                                    alt={post.media[0].alt_text || post.content}
+                                    className="w-full h-full object-cover group-hover:scale-105 transition-all duration-500"
+                                />
+                            ) : (
+                                <video
+                                    src={post.media[0].url}
+                                    className="w-full h-full object-cover"
+                                    poster={post.media[0].thumbnail_url}
+                                />
+                            )}
+                            {post.media.length > 1 && (
+                                <div className="absolute top-2 right-2 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+                                    +{post.media.length - 1}
+                                </div>
+                            )}
                         </div>
                     )}
 
                     <div className="p-6 space-y-4">
                         <div className="flex items-center gap-2">
-                            <Avatar src={post.author.avatar} alt={post.author.name} size="sm" />
+                            <Avatar src={post.user.avatar_url} alt={post.user.full_name} size="sm" />
                             <div className="flex-1 min-w-0">
                                 <p className="font-bold text-neutral-800 text-sm truncate">
-                                    {post.author.name}
+                                    {post.user.full_name}
                                 </p>
-                                <p className="text-xs text-neutral-600 font-medium">{post.timestamp}</p>
+                                <p className="text-xs text-neutral-600 font-medium">{new Date(post.created_at).toLocaleDateString()}</p>
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <h3 className="font-extrabold text-neutral-800 text-lg leading-tight group-hover:text-primary-200 transition-colors">
-                                {post.title}
-                            </h3>
+                            {post.title && (
+                                <h3 className="font-extrabold text-neutral-800 text-lg leading-tight group-hover:text-primary-200 transition-colors">
+                                    {post.title}
+                                </h3>
+                            )}
                             <p className="text-sm text-neutral-600 line-clamp-2 font-medium leading-relaxed">
-                                {post.description}
+                                {post.content}
                             </p>
                         </div>
 
@@ -79,7 +81,6 @@ export default function ProfilePostsGrid({ posts }: ProfilePostsGridProps) {
                     </div>
                 </Link>
             ))}
-        </div>
+        </div >
     );
 }
-

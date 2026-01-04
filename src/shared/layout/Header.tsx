@@ -1,11 +1,13 @@
 'use client';
 
 import { Search, Bell } from 'lucide-react';
-import { useAuth } from '@/src/shared/context/AuthContext';
+import { useAuth } from '@/src/features/auth/hooks/useAuth';
+import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
 import { Avatar } from '@/src/shared/ui';
 
 export default function Header() {
-    const { user, isAuthenticated, openLoginModal } = useAuth();
+    const { user, isAuthenticated } = useAuth();
+    const { openLoginModal } = useAuthUI();
 
     return (
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10 ml-64">

@@ -1,5 +1,5 @@
 import { get, post } from '@/src/shared/lib/api-client';
-import { MessageSchema, ConversationSchema, type Message, type Conversation } from '@/src/shared/lib/schemas';
+import { MessageSchema, ConversationSchema, type Message, type Conversation } from '@/src/shared/contracts/schemas';
 export { MessageSchema, ConversationSchema, type Message, type Conversation };
 import { z } from 'zod';
 

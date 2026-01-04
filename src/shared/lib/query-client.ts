@@ -40,6 +40,7 @@ export const queryKeys = {
     // Feed
     feed: ['feed'] as const,
     post: (id: string) => ['post', id] as const,
+    postComments: (id: string) => ['post', id, 'comments'] as const,
     
     // Profile
     userProfile: (username: string) => ['user', username] as const,

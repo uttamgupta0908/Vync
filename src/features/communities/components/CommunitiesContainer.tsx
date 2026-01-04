@@ -10,10 +10,6 @@ import AllCommunitiesSection from './AllCommunitiesSection';
 
 import { Plus, Filter } from 'lucide-react';
 
-interface CommunitiesContainerProps {
-    // No props needed if we internalize state
-}
-
 /**
  * Communities Container (Smart Component)
  * Handles data fetching and state management for communities

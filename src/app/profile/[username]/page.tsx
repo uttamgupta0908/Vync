@@ -32,7 +32,8 @@ export default function ProfilePage({ params }: PageProps) {
     return (
         <div className="flex-1 min-h-screen bg-neutral-400">
             <AppHeader />
-            <ProfileContainer username={username} />
+
+            <ProfileContainer username={username} isMe={false} />
         </div>
     );
 }

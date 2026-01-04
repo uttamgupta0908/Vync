@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Search, Bell, Mail, PenSquare } from 'lucide-react';
-import { useAuth } from '@/src/shared/context/AuthContext';
+import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
+import { useAuth } from '@/src/features/auth/hooks/useAuth';
 
 const navItems = [
     { name: 'Home', href: '/', icon: Home },
@@ -14,7 +15,9 @@ const navItems = [
 
 export default function BottomNav() {
     const pathname = usePathname();
-    const { isAuthenticated, openLoginModal } = useAuth();
+    const { isAuthenticated } = useAuth();
+    const { openLoginModal } = useAuthUI();
+
 
     const handleAction = (e: React.MouseEvent, isProtected: boolean) => {
         if (isProtected && !isAuthenticated) {

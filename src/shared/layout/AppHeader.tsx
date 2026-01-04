@@ -4,10 +4,13 @@ import Link from 'next/link';
 import { Search, Bell, Plus, LogOut, User, Settings, ChevronDown } from 'lucide-react';
 import { Avatar } from '@/src/shared/ui';
 import { currentUser } from '@/src/shared/data/mock';
-import { useAuth } from '@/src/shared/context/AuthContext';
+import { useAuth, useLogout } from '@/src/features/auth/hooks/useAuth';
+import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
 
 export default function AppHeader() {
-    const { user, isAuthenticated, openLoginModal, logout } = useAuth();
+    const { user, isAuthenticated, isLoading } = useAuth();
+    const { openLoginModal } = useAuthUI();
+    const { mutate: logout } = useLogout();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -68,15 +71,17 @@ export default function AppHeader() {
                     <span>Create Post</span>
                 </button>
 
-                {isAuthenticated ? (
+                {isLoading ? (
+                    <div className="w-9 h-9 bg-neutral-300 rounded-full animate-pulse" />
+                ) : isAuthenticated ? (
                     <div className="relative" ref={menuRef}>
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             className="flex items-center gap-2 p-1 pr-2 rounded-full hover:bg-neutral-200 transition-colors border border-transparent hover:border-neutral-300"
                         >
                             <Avatar
-                                src={user?.avatar || currentUser.avatar}
-                                alt={user?.name || currentUser.name}
+                                src={user?.avatar_url || currentUser.avatar_url || ''}
+                                alt={user?.full_name || currentUser.full_name || 'User'}
                                 size="sm"
                                 className="border border-neutral-300"
                             />
@@ -87,8 +92,8 @@ export default function AppHeader() {
                         {isMenuOpen && (
                             <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl border border-neutral-200 overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right">
                                 <div className="p-4 border-b border-neutral-100 bg-neutral-50/50">
-                                    <p className="font-bold text-neutral-800 truncate">{user?.name}</p>
-                                    <p className="text-xs text-neutral-500 truncate">{user?.handle || '@user'}</p>
+                                    <p className="font-bold text-neutral-800 truncate">{user?.full_name}</p>
+                                    <p className="text-xs text-neutral-500 truncate">@{user?.username || 'user'}</p>
                                 </div>
 
                                 <div className="p-2">

@@ -2,8 +2,9 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/src/shared/context/AuthContext';
+import { useAuth } from '@/src/features/auth/hooks/useAuth';
 import ProfileContainer from '@/src/features/profile/components/ProfileContainer';
+import AppHeader from '@/src/shared/layout/AppHeader';
 import { Loader2 } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -26,5 +27,10 @@ export default function ProfilePage() {
 
     if (!isAuthenticated) return null;
 
-    return <ProfileContainer username="you" />;
+    return (
+        <div className="flex-1 min-h-screen bg-neutral-400">
+            <AppHeader />
+            <ProfileContainer username="you" isMe={true} />
+        </div>
+    );
 }

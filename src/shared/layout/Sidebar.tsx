@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation';
 import { Home, Search, Users, MessageSquare, Bell, Bookmark, Trophy } from 'lucide-react';
 import { currentUser } from '@/src/shared/data/mock';
 import { Avatar } from '@/src/shared/ui';
-import { useAuth } from '@/src/shared/context/AuthContext';
+import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
+import { useAuth } from '@/src/features/auth/hooks/useAuth';
 
 const navItems = [
     { name: 'Home', href: '/', icon: Home },
@@ -24,7 +25,9 @@ interface SidebarProps {
 
 export default function Sidebar({ showLogo = false, fullHeight = false }: SidebarProps) {
     const pathname = usePathname();
-    const { isAuthenticated, openLoginModal } = useAuth();
+    const { user, isAuthenticated } = useAuth();
+    const { openLoginModal } = useAuthUI();
+
 
     return (
         <aside className={`w-[275px] fixed left-0 hidden sm:flex flex-col border-r border-neutral-300 bg-neutral-100 z-40 ${fullHeight ? 'h-screen top-0' : 'h-[calc(100vh-64px)] top-16'
@@ -91,8 +94,8 @@ export default function Sidebar({ showLogo = false, fullHeight = false }: Sideba
             <div className="p-4 border-t border-neutral-300">
                 <button className="flex items-center gap-3 p-3 w-full rounded-xl hover:bg-neutral-300 transition-colors text-left group">
                     <Avatar
-                        src={currentUser.avatar}
-                        alt={currentUser.name}
+                        src={currentUser.avatar_url}
+                        alt={currentUser.full_name}
                         size="md"
                         className="ring-2 ring-transparent group-hover:ring-primary-300/20 transition-all"
                     />

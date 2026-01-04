@@ -1,55 +1,49 @@
+import { z } from 'zod';
 import { get, post, del } from '@/src/shared/lib/api-client';
-import { Post, User } from '@/src/shared/types';
-import { posts } from '@/src/shared/data/mock';
+import {
+  Post,
+  FeedResponse,
+  PostSchema,
+  FeedResponseSchema,
+  Comment,
+  CommentSchema,
+} from '@/src/shared/contracts/schemas';
 
-/**
- * Feed API Services
- * All API calls related to the feed feature
- */
 
-export interface FeedResponse {
-    posts: Post[];
-    nextCursor?: string;
-}
-
-/**
- * Fetch feed posts
- */
 export const fetchFeed = async (): Promise<Post[]> => {
-    // TODO: Replace with actual API endpoint
-    // return get<FeedResponse>('/feed').then(res => res.posts);
-    
-    // Mock data for now
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(posts);
-        }, 500);
-    });
+  const response = await get<FeedResponse>(
+    '/api/v1/feed/feeds/discovery/'
+  );
+
+  const validated = FeedResponseSchema.parse(response);
+  return validated.results;
 };
 
-/**
- * Like a post
- */
+export const fetchPostById = async (id: string): Promise<Post> => {
+  const response = await get<Post>(
+    `/api/v1/feed/feeds/${id}/`
+  );
+
+  return PostSchema.parse(response);
+};
+
 export const likePost = async (postId: string): Promise<void> => {
-    // TODO: Replace with actual API endpoint
-    // return post(`/posts/${postId}/like`);
-    
-    // Mock implementation
-    return new Promise((resolve) => {
-        setTimeout(resolve, 300);
-    });
+  await post(`/api/v1/feed/posts/${postId}/like`);
+};
+
+export const unlikePost = async (postId: string): Promise<void> => {
+  await del(`/api/v1/feed/posts/${postId}/like`);
 };
 
 /**
- * Unlike a post
+ * Fetch comments for a specific post
+ * GET /api/v1/feed/posts/{postId}/comments/
  */
-export const unlikePost = async (postId: string): Promise<void> => {
-    // TODO: Replace with actual API endpoint
-    // return del(`/posts/${postId}/like`);
-    
-    // Mock implementation
-    return new Promise((resolve) => {
-        setTimeout(resolve, 300);
-    });
+export const fetchPostComments = async (postId: string): Promise<Comment[]> => {
+  const response = await get<any>(`/api/v1/feed/posts/${postId}/comments/`);
+  
+  // Handle potentially wrapped response
+  const commentsData = response.results || (Array.isArray(response) ? response : []);
+  
+  return z.array(CommentSchema).parse(commentsData);
 };
-

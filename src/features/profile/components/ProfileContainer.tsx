@@ -10,9 +10,10 @@ import ProfilePostsGrid from './ProfilePostsGrid';
 
 interface ProfileContainerProps {
     username: string;
+    isMe: boolean;
 }
 
-export default function ProfileContainer({ username }: ProfileContainerProps) {
+export default function ProfileContainer({ username, isMe }: ProfileContainerProps) {
     const {
         data: user,
         isLoading: userLoading,
@@ -44,14 +45,14 @@ export default function ProfileContainer({ username }: ProfileContainerProps) {
     return (
         <div className="max-w-7xl mx-auto space-y-8">
 
-            <UserProfileHeader user={user} />
+            <UserProfileHeader user={user} isMe={isMe} />
 
             <div className="px-8 space-y-8">
                 {/* Stats Section */}
                 <UserStats
-                    posts={user.posts || 0}
-                    followers={user.followers}
-                    following={user.following}
+                    posts={user.posts_count || 0}
+                    followers={user.followers_count || 0}
+                    following={user.following_count || 0}
                     rewardPoints={user.rewardPoints || 0}
                 />
 
