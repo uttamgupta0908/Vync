@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { authService, type LoginCredentials } from '../services';
 import toast from 'react-hot-toast';
+import { queryKeys } from '@/src/shared/lib/query-client';
 
 /**
  * Get current user with proper caching
@@ -10,7 +11,7 @@ import toast from 'react-hot-toast';
  */
 export function useCurrentUser() {
     return useQuery({
-        queryKey: ['currentUser'],
+        queryKey: queryKeys.currentUser,
         queryFn: authService.getCurrentUser,
         staleTime: 5 * 60 * 1000, // 5 minutes
         gcTime: 30 * 60 * 1000, // 30 minutes (formerly cacheTime)
@@ -28,7 +29,7 @@ export function useLogin() {
         mutationFn: authService.login,
         onSuccess: (data) => {
             // Update user data immediately
-            queryClient.setQueryData(['currentUser'], data.user);
+            queryClient.setQueryData(queryKeys.currentUser, data.user);
             toast.success('Welcome back!');
         },
         onError: (error: any) => {
@@ -49,8 +50,8 @@ export function useLogout() {
         mutationFn: authService.logout,
         onSuccess: () => {
             // Clear user data
-            queryClient.setQueryData(['currentUser'], null);
-            queryClient.invalidateQueries({ queryKey: ['currentUser'] });
+            queryClient.setQueryData(queryKeys.currentUser, null);
+            queryClient.invalidateQueries({ queryKey: queryKeys.currentUser });
             router.push('/');
             toast.success('Logged out successfully');
         },
