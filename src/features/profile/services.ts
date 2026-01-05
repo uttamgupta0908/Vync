@@ -9,9 +9,10 @@ import { Post } from '@/src/shared/types';
  * All API calls related to user profiles
  */
 
-export interface UserProfile extends User {
-    coverImage?: string;
-}
+// Use User type directly
+// export interface UserProfile extends User {
+//     coverImage?: string;
+// }
 
 // Use Post directly if no additional fields are needed
 export type ProfilePost = Post;
@@ -19,7 +20,7 @@ export type ProfilePost = Post;
 /**
  * Fetch user profile by username
  */
-export const fetchUserProfile = async (username: string): Promise<UserProfile> => {
+export const fetchUserProfile = async (username: string): Promise<User> => {
     // Strip leading @ if present (e.g. from /profile/@username)
     const normalizedUsername = username.startsWith('@') ? username.substring(1) : username;
 
