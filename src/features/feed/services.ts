@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { get, post, del } from '@/src/shared/lib/api-client';
+import { get, post, del, localGet } from '@/src/shared/lib/api-client';
 import {
   Post,
   FeedResponse,
@@ -10,13 +10,14 @@ import {
 } from '@/src/shared/contracts/schemas';
 
 
-export const fetchFeed = async (): Promise<Post[]> => {
-  const response = await get<FeedResponse>(
-    '/api/v1/feed/feeds/discovery/'
+export const fetchFeed = async ({ pageParam = 0 }: { pageParam?: number } = {}): Promise<FeedResponse> => {
+  // Proxy: /api/feed/feeds/discovery -> Backend: /api/v1/feed/feeds/discovery
+  const response = await localGet<FeedResponse>(
+    '/api/feed/feeds/discovery',
+    { offset: pageParam, limit: 20 }
   );
 
-  const validated = FeedResponseSchema.parse(response);
-  return validated.results;
+  return FeedResponseSchema.parse(response);
 };
 
 export const fetchPostById = async (id: string): Promise<Post> => {
