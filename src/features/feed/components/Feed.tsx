@@ -5,7 +5,6 @@ import Avatar from '@/src/shared/ui/Avatar';
 import FeedContainer from '@/src/features/feed/components/FeedContainer';
 import { useAuth } from '@/src/features/auth/hooks/useAuth';
 import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
-import { any } from 'zod';
 
 export default function Feed() {
     const { user, isAuthenticated } = useAuth();
@@ -31,7 +30,7 @@ export default function Feed() {
                         alt={user?.full_name || 'Guest'}
                         size="md"
                     />
-                    <div className="flex-1" onClick={!isAuthenticated ? handleAction : any}>
+                    <div className="flex-1" onClick={!isAuthenticated ? handleAction : undefined}>
                         <input
                             type="text"
                             placeholder="What's happening?"
