@@ -13,6 +13,7 @@ export const VerificationBadgeSchema = z.object({
     icon: z.string(),
     badge_type: z.string(),
     description: z.string().optional(),
+    color: z.string().optional(), // Often present in badge APIs
     awarded_at: z.string(),
 });
 
@@ -181,11 +182,8 @@ export const CommentSchema = z.object({
 });
 
 // Profile Schemas
-export const UserProfileSchema = UserSchema.extend({
-    coverImage: z.string().optional(),
-    website: z.string().optional(),
-    joinedDate: z.string().optional(),
-});
+// UserProfileSchema is redundant as UserSchema now contains all fields
+// export const UserProfileSchema = UserSchema; 
 
 export const UserPostsResponseSchema = z.array(PostSchema);
 
