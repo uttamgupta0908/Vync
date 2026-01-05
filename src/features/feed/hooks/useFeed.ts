@@ -1,17 +1,27 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery, InfiniteData } from '@tanstack/react-query';
 import { fetchFeed, fetchPostById, likePost, unlikePost, fetchPostComments } from '../services';
 import { queryKeys } from '@/src/shared/lib/query-client';
-import { Post } from '@/src/shared/types';
+import { Post, FeedResponse } from '@/src/shared/contracts/schemas'; // Assuming types export here or index
 import { useAuth } from '@/src/features/auth/hooks/useAuth';
 
 /**
- * Hook to fetch feed data
+ * Hook to fetch feed data (infinite)
  */
 export function useFeed() {
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: queryKeys.feed,
         queryFn: fetchFeed,
-        staleTime: 30000, // 30 seconds
+        initialPageParam: 0,
+        getNextPageParam: (lastPage, allPages) => {
+             // Hard stop if we received fewer items than the limit (20), meaning no more full pages
+            if (!lastPage.results || lastPage.results.length < 20) {
+                return undefined;
+            }
+            // Trust frontend calculation over backend response to prevent loops
+            // Uses current page number * limit (20)
+            return allPages.length * 20;
+        },
+        staleTime: 30000,
     });
 }
 
@@ -41,8 +51,9 @@ export function usePostDetail(id: string) {
         staleTime: 30000,
         initialData: () => {
             // Optimistically try to get the post from the feed cache
-            const feedData = queryClient.getQueryData<Post[]>(queryKeys.feed);
-            return feedData?.find((p) => p.id === id);
+            const feedData = queryClient.getQueryData<InfiniteData<FeedResponse>>(queryKeys.feed);
+            const allPosts = feedData?.pages.flatMap(page => page.results) || [];
+            return allPosts.find((p) => p.id === id);
         },
         initialDataUpdatedAt: () => {
             // Use the timestamp from the feed query to determine freshness
@@ -74,21 +85,27 @@ export function useLikePost() {
             await queryClient.cancelQueries({ queryKey: queryKeys.post(postId) });
 
             // Snapshot the previous values
-            const previousFeed = queryClient.getQueryData<Post[]>(queryKeys.feed);
+            const previousFeed = queryClient.getQueryData<InfiniteData<FeedResponse>>(queryKeys.feed);
             const previousPost = queryClient.getQueryData<Post>(queryKeys.post(postId));
 
             // Optimistically update to the new value in the feed list
-            queryClient.setQueryData<Post[]>(queryKeys.feed, (old) => {
+            queryClient.setQueryData<InfiniteData<FeedResponse>>(queryKeys.feed, (old) => {
                 if (!old) return old;
-                return old.map((post) =>
-                    post.id === postId
-                        ? {
-                            ...post,
-                            has_liked: !has_liked,
-                            likes: has_liked ? post.likes - 1 : post.likes + 1,
-                        }
-                        : post
-                );
+                return {
+                    ...old,
+                    pages: old.pages.map((page) => ({
+                        ...page,
+                        results: page.results.map((post) =>
+                            post.id === postId
+                                ? {
+                                    ...post,
+                                    has_liked: !has_liked,
+                                    likes: has_liked ? post.likes - 1 : post.likes + 1,
+                                }
+                                : post
+                        ),
+                    })),
+                };
             });
 
             // Optimistically update to the new value in the post detail cache
