@@ -37,6 +37,9 @@ export const queryClient = new QueryClient({
  * Centralized query keys for type safety and consistency
  */
 export const queryKeys = {
+    // Auth
+    currentUser: ['currentUser'] as const,
+
     // Feed
     feed: ['feed'] as const,
     post: (id: string) => ['post', id] as const,
