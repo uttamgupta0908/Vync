@@ -58,7 +58,7 @@ export const posts: Post[] = [
     visibility: 'public',
     nsfw: false,
     has_media: true,
-    media: [{ type: 'image', url: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80', aspectRatio: 1.5 }],
+    media: [{ type: 'image', url: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=800&q=80', id: 'm1' }],
   },
   {
     id: 'p2',
@@ -91,7 +91,7 @@ export const posts: Post[] = [
     visibility: 'public',
     nsfw: false,
     has_media: true,
-    media: [{ type: 'image', url: 'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=800&q=80', aspectRatio: 1.5 }],
+    media: [{ type: 'image', url: 'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=800&q=80', id: 'm3' }],
   },
   {
     id: 'p4',
