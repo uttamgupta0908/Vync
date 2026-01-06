@@ -2,22 +2,18 @@ import { NextResponse } from 'next/server';
 import { backendClient } from '@/src/shared/lib/server/backend-client';
 import { mapError } from '@/src/utils/error-mapping';
 
-// Generic handler for GET, POST, DELETE
 async function proxyRequest(
     request: Request,
     ctx: { params: Promise<{ path: string[] }> },
     method: 'get' | 'post' | 'delete'
 ) {
     const { path } = await ctx.params;
+    const backendPath = `/api/v1/community/${path.join('/')}/`;
     
-    // Construct backend URL path
-    const backendPath = `/api/v1/feed/${path.join('/')}/`;
-    
-    console.log(`[Feed Proxy] ${method.toUpperCase()} ${request.url} -> ${backendPath}`);
+    console.log(`[Community Proxy] ${method.toUpperCase()} ${request.url} -> ${backendPath}`);
 
     try {
         let response;
-        
         if (method === 'get') {
             const url = new URL(request.url);
             const query = url.search ? url.search : '';
@@ -31,14 +27,11 @@ async function proxyRequest(
 
         return NextResponse.json(response?.data || {});
     } catch (error: any) {
-        const { message } = mapError(error);
-        console.error(`Feed Proxy Error [${method.toUpperCase()} ${backendPath}]:`, error.response?.data || error.message);
+        const { message, status } = mapError(error) as any; // Using mapError logic
+        console.error(`Community Proxy Error [${method.toUpperCase()} ${backendPath}]:`, error.response?.data || error.message);
         
         return NextResponse.json(
-            { 
-                error: message, 
-                details: error.response?.data || error.message 
-            },
+            { error: message, details: error.response?.data || error.message },
             { status: error.response?.status || 500 }
         );
     }

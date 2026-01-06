@@ -1,16 +1,18 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import axios from 'axios';
+import { clearAuthCookies } from '@/src/shared/lib/server/auth-utils';
+import { backendClient } from '@/src/shared/lib/server/backend-client';
+import { VYNC_API } from '@/src/shared/lib/constants';
 
 export async function POST() {
-    // Clear cookies
-    const cookieStore = await cookies();
-    
-    cookieStore.set('access_token', '', { maxAge: 0, path: '/' });
-    cookieStore.set('refresh_token', '', { maxAge: 0, path: '/' });
-    
-    // Optional: Call backend logout if needed (fire and forget)
-    // await axios.post('https://api.vync.live/api/v1/auth/logout/');
+    try {
+        // Optional: Call backend logout
+        await backendClient.post(VYNC_API.AUTH.LOGOUT).catch(() => {
+            // Silently ignore logout errors from backend
+        });
+    } finally {
+        // Always clear cookies
+        await clearAuthCookies();
+    }
     
     return NextResponse.json({ success: true });
 }
