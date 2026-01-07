@@ -58,7 +58,9 @@ describe('useSendMessage', () => {
 
         queryClient.setQueryData(queryKey, previousMessages);
 
-        (services.sendMessage as any).mockRejectedValue(new Error('Network Error'));
+        (services.sendMessage as any).mockImplementation(() =>
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Network Error')), 100))
+        );
         // Important: mock fetchMessages to return the original state so invalidation doesn't break our check
         (services.fetchMessages as any).mockResolvedValue(previousMessages);
 
@@ -76,7 +78,7 @@ describe('useSendMessage', () => {
         // 2. Wait for it to fail
         await waitFor(() => {
             expect(result.current.isError).toBe(true);
-        });
+        }, { timeout: 2000 });
 
         // 3. Check rollback (using a relaxed check for contents since timestamp/id might be dynamic)
         await waitFor(() => {

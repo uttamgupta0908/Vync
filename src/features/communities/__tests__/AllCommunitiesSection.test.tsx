@@ -3,13 +3,15 @@ import { describe, it, expect } from 'vitest';
 import AllCommunitiesSection from '../components/AllCommunitiesSection';
 import { Community } from '../services';
 
-const mockCommunities: Community[] = [
+const mockCommunities: any[] = [
     {
         id: '1',
         name: 'r/WebDev',
         description: 'A community for developers.',
         members: 1000,
         category: 'Gaming',
+        image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
+        creator: { id: 'u1', username: 'creator1' }
     },
     {
         id: '2',
@@ -17,6 +19,8 @@ const mockCommunities: Community[] = [
         description: 'A community for designers.',
         members: 2000,
         category: 'Food',
+        image: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2',
+        creator: { id: 'u2', username: 'creator2' }
     },
 ];
 
