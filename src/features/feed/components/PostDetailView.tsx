@@ -46,7 +46,7 @@ export default function PostDetailView({ id }: PostDetailViewProps) {
     }
 
     return (
-        <div className="flex-1 min-h-screen flex flex-col pb-20 sm:pb-0 bg-neutral-100">
+        <div className="flex-1 min-h-screen flex flex-col pb-20 sm:pb-0 bg-neutral-400">
             <DetailsHeader />
 
             <div className="flex-1 p-6 px-14">
