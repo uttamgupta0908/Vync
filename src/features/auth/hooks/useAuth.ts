@@ -1,3 +1,5 @@
+'use client';
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { authService, type LoginCredentials } from '../services';
@@ -31,6 +33,8 @@ export function useLogin() {
             // Update user data immediately
             queryClient.setQueryData(queryKeys.currentUser, data.user);
             toast.success('Welcome back!');
+            // Force reload to ensure fresh state
+            window.location.reload();
         },
         onError: (error: any) => {
             console.error('Login failed:', error);
@@ -52,8 +56,9 @@ export function useLogout() {
             // Clear user data
             queryClient.setQueryData(queryKeys.currentUser, null);
             queryClient.invalidateQueries({ queryKey: queryKeys.currentUser });
-            router.push('/');
             toast.success('Logged out successfully');
+            // Force reload and redirect to home
+            window.location.href = '/';
         },
         onError: (error: any) => {
             toast.error('Logout failed. Please try again.');
