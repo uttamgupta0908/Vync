@@ -61,6 +61,7 @@ export default function TrendingSection() {
                                 handle={`v/${community.slug || community.id.substring(0, 8)}`}
                                 description={community.description || ""}
                                 memberCount={`${community.followers_count || community.members || 0}`}
+                                iconUrl={community.image || undefined}
                                 variant="trending"
                                 badge={index === 0 ? '🔥 Hottest' : index < 3 ? '⚡ Trending' : undefined}
                                 headerColor={index === 0 ? 'bg-purple-500' : index < 3 ? 'bg-orange-500' : 'bg-slate-500'}
