@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import CommunityCard from './CommunityCard';
 import { Gamepad2, Utensils, Camera, BookOpen, Music, Plane } from 'lucide-react';
@@ -45,12 +47,12 @@ export default function AllCommunitiesSection({ communities }: AllCommunitiesSec
                     <div key={community.id} className="h-full">
                         <CommunityCard
                             name={community.name}
-                            handle={`@${community.name.toLowerCase().replace('r/', '')}`}
-                            description={community.description}
-                            icon={getIcon(community.category)}
-                            memberCount={`${(community.members / 1000).toFixed(1)}K`}
-                            tag={community.category}
-                            headerColor={getHeaderColor(community.category)}
+                            handle={`v/${community.slug || community.id.substring(0, 8)}`}
+                            description={community.description || ""}
+                            memberCount={`${community.followers_count || community.members || 0}`}
+                            icon={getIcon(community.category || '')}
+                            headerColor={getHeaderColor(community.category || '')}
+                            tag={community.category || undefined}
                             variant="default"
                         />
                     </div>
