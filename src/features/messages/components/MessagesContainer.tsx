@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useConversations, useMessages } from '../hooks/useMessages';
 import MessageList from './MessageList';
 import ChatWindow from './ChatWindow';
-import { FeedSkeleton } from '@/src/shared/ui/LoadingSkeleton';
+import { MessageSkeleton } from '@/src/shared/ui/LoadingSkeleton';
 import ErrorState from '@/src/shared/ui/ErrorState';
 
 /**
@@ -29,7 +29,7 @@ export default function MessagesContainer() {
         return (
             <div className="flex flex-1 overflow-hidden p-6 sm:p-8 gap-6 w-full max-w-[1600px] mx-auto">
                 <div className="w-1/3">
-                    <FeedSkeleton />
+                    <MessageSkeleton />
                 </div>
                 <div className="flex-1 bg-neutral-100 rounded-3xl animate-pulse" />
             </div>

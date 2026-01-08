@@ -1,11 +1,5 @@
 import { z } from 'zod';
 
-/**
- * Zod Schemas for API Validation
- * Single source of truth for all API contracts
- * Updated to match real Vync API format
- */
-
 // Verification Badge Schema
 export const VerificationBadgeSchema = z.object({
     id: z.string().optional(), // API response does not include id
@@ -19,7 +13,7 @@ export const VerificationBadgeSchema = z.object({
 
 // User Schema - matches Vync API
 export const UserSchema = z.object({
-    id: z.string(),
+    id: z.coerce.string(),
     username: z.string(),
     email: z.string().email().nullable().optional(),
     full_name: z.string().nullable().optional(),
@@ -70,7 +64,7 @@ export const UserSchema = z.object({
 
 // Media Schema
 export const MediaSchema = z.object({
-    id: z.string(),
+    id: z.coerce.string(),
     type: z.enum(['video', 'image']),
     url: z.string().url(),
     thumbnail_url: z.string().url().optional(),
@@ -81,37 +75,64 @@ export const MediaSchema = z.object({
 });
 
 // Community Schema
+// Community Schema
 export const CommunitySchema = z.object({
-    id: z.string(),
+    id: z.coerce.string(),
     name: z.string(),
-    description: z.string().optional(),
-    members: z.number().optional(),
-    image: z.string().optional(),
-    category: z.string().optional(),
+    description: z.string().nullable().optional(),
+    members: z.number().optional().default(0), // Used in list views
+    followers_count: z.number().optional().default(0), // API uses this for trending
+    image: z.string().nullable().optional(),
+    cover: z.string().nullable().optional(),
+    category: z.string().nullable().optional(),
     slug: z.string().optional(),
-    isJoined: z.boolean().optional(),
+    isJoined: z.boolean().optional().default(false),
+    creator: z.object({
+        id: z.string(),
+        username: z.string(),
+    }).nullable().optional(),
 });
+
+// Trending Community Schema (includes sample members)
+export const TrendingCommunitySchema = CommunitySchema.extend({
+    sample_members: z.array(UserSchema).optional(),
+});
+
+// Trending Communities Response Schema
+export const TrendingCommunitiesResponseSchema = z.preprocess(
+    (val) => {
+        if (Array.isArray(val)) {
+            return { trending_communities: val };
+        }
+        return val;
+    },
+    z.object({
+        trending_communities: z.array(TrendingCommunitySchema).nullable().transform(val => val ?? []).default([]),
+        generated_at: z.string().nullable().optional(),
+    })
+);
+
 
 // Community Details Schema (as seen in Feed Post)
 export const CommunityDetailsSchema = z.object({
-    id: z.string(),
+    id: z.coerce.string(),
     name: z.string(),
     slug: z.string(),
 });
 
 // Post Schema - matches Vync API
 export const PostSchema = z.object({
-    id: z.string(),
+    id: z.coerce.string(),
     title: z.string().nullable().optional(),
     content: z.string(),
     summary: z.string().nullable().optional(),
     type: z.enum(['video', 'image', 'text']).optional(),
-    category: z.string().optional(),
-    tags: z.array(z.string()).optional(),
-    topics: z.array(z.string()).optional(),
-    likes: z.number(),
-    comments: z.number(),
-    views: z.number(),
+    category: z.string().nullable().optional(),
+    tags: z.array(z.string()).nullable().optional(),
+    topics: z.array(z.string()).nullable().optional(),
+    likes: z.number().default(0),
+    comments: z.number().default(0),
+    views: z.number().default(0),
     shares: z.number().optional(),
     saves: z.number().optional(),
     reposts: z.number().optional(),
@@ -128,7 +149,7 @@ export const PostSchema = z.object({
     user: UserSchema,
     media: z.array(MediaSchema).optional(),
     has_media: z.boolean().optional(),
-    has_liked: z.boolean(),
+    has_liked: z.boolean().default(false),
     is_saved: z.boolean().optional(),
     community: z.any().nullable().optional(),
     community_details: CommunityDetailsSchema.nullable().optional(),
@@ -141,19 +162,24 @@ export const PostSchema = z.object({
 
 // Feed Response Schema
 export const FeedResponseSchema = z.object({
-    results: z.array(PostSchema),
+    results: z.array(PostSchema).nullable().transform(val => val ?? []).default([]),
     pagination: z.object({
-        limit: z.number(),
-        offset: z.number(),
-        count: z.number(),
-        has_more: z.boolean(),
+        limit: z.number().default(20),
+        offset: z.number().default(0),
+        count: z.number().default(0),
+        has_more: z.boolean().default(false),
+    }).optional().default({
+        limit: 20,
+        offset: 0,
+        count: 0,
+        has_more: false,
     }),
 });
 
 // Message Schema
 export const MessageSchema = z.object({
-    id: z.string(),
-    senderId: z.string(),
+    id: z.coerce.string(),
+    senderId: z.coerce.string(),
     text: z.string(),
     timestamp: z.string(),
     isMe: z.boolean(),
@@ -161,7 +187,7 @@ export const MessageSchema = z.object({
 
 // Conversation Schema
 export const ConversationSchema = z.object({
-    id: z.string(),
+    id: z.coerce.string(),
     userName: z.string(),
     userAvatar: z.string(),
     lastMessage: z.string(),
@@ -172,12 +198,12 @@ export const ConversationSchema = z.object({
 
 // Comment Schema
 export const CommentSchema = z.object({
-    id: z.string(),
+    id: z.coerce.string(),
     content: z.string(),
     created_at: z.string(),
     likes: z.number().default(0),
     user: UserSchema,
-    parent_comment: z.string().nullable().optional(),
+    parent_comment: z.coerce.string().nullable().optional(),
     replies_count: z.number().default(0),
 });
 
@@ -198,11 +224,48 @@ export const CurrentUserResponseSchema = z.object({
     user: UserSchema.nullable(),
 });
 
+// Hashtag Schema
+export const TrendingHashtagSchema = z.object({
+    hashtag: z.string(),
+    usage_count: z.number().default(0),
+    last_used: z.string().nullable().optional(),
+    total_engagement: z.number().default(0),
+    trending_score: z.number().default(0),
+});
+
+// Whats Happening Response Schema
+export const WhatsHappeningResponseSchema = z.preprocess(
+    (val) => {
+        if (Array.isArray(val)) {
+            return { trending_hashtags: val };
+        }
+        return val;
+    },
+    z.object({
+        trending_hashtags: z.array(TrendingHashtagSchema).nullable().transform(val => val ?? []).default([]),
+        generated_at: z.string().nullable().optional(),
+    })
+);
+
+
 // Error Schema
 export const ApiErrorSchema = z.object({
     error: z.string(),
     code: z.string().optional(),
     details: z.unknown().optional(),
+});
+
+// Engagement Response Schemas
+export const LikeResponseSchema = z.object({
+    detail: z.string(),
+    likes: z.number(),
+    has_liked: z.boolean(),
+});
+
+export const SaveResponseSchema = z.object({
+    detail: z.string(),
+    saves: z.number(),
+    is_saved: z.boolean(),
 });
 
 // Type exports
@@ -211,8 +274,16 @@ export type Post = z.infer<typeof PostSchema>;
 export type Media = z.infer<typeof MediaSchema>;
 export type FeedResponse = z.infer<typeof FeedResponseSchema>;
 export type Community = z.infer<typeof CommunitySchema>;
+export type TrendingCommunity = z.infer<typeof TrendingCommunitySchema>;
 export type Message = z.infer<typeof MessageSchema>;
 export type Conversation = z.infer<typeof ConversationSchema>;
 export type Comment = z.infer<typeof CommentSchema>;
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
 export type ApiError = z.infer<typeof ApiErrorSchema>;
+export type TrendingHashtag = z.infer<typeof TrendingHashtagSchema>;
+export type WhatsHappeningResponse = z.infer<typeof WhatsHappeningResponseSchema>;
+export type TrendingCommunitiesResponse = z.infer<typeof TrendingCommunitiesResponseSchema>;
+export type LikeResponse = z.infer<typeof LikeResponseSchema>;
+export type SaveResponse = z.infer<typeof SaveResponseSchema>;
+
+

@@ -42,6 +42,7 @@ export const queryKeys = {
 
     // Feed
     feed: ['feed'] as const,
+    whatsHappening: ['feed', 'whatsHappening'] as const,
     post: (id: string) => ['post', id] as const,
     postComments: (id: string) => ['post', id, 'comments'] as const,
     
@@ -51,6 +52,7 @@ export const queryKeys = {
     
     // Communities
     communities: ['communities'] as const,
+    trendingCommunities: ['communities', 'trending'] as const,
     community: (id: string) => ['community', id] as const,
     
     // Messages

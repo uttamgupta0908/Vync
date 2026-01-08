@@ -5,6 +5,7 @@ import { users } from '@/src/shared/data/mock';
 import { Avatar } from '@/src/shared/ui';
 import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
 import { useAuth } from '@/src/features/auth/hooks/useAuth';
+import { useWhatsHappening } from '@/src/features/feed/hooks/useFeed';
 
 export default function RightSidebar() {
     const pathname = usePathname();
@@ -12,6 +13,7 @@ export default function RightSidebar() {
     const { isAuthenticated } = useAuth();
     const { openLoginModal } = useAuthUI();
 
+    const { data: whatsHappening, isLoading: isTrendingLoading } = useWhatsHappening();
 
     const handleAction = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -27,26 +29,37 @@ export default function RightSidebar() {
 
     return (
         <div className="w-[350px] ml-[-24px] hidden lg:block space-y-6 py-6 sticky top-6 h-screen overflow-y-auto p-4">
-            <div className="bg-neutral-100 rounded-2xl border border-neutral-300 shadow-sm">
-                <h2 className="text-base font-bold px-4 py-3 text-neutral-800 border-b border-neutral-200">Trending Hashtags</h2>
+            <div className="bg-neutral-100 rounded-2xl border border-neutral-300 shadow-sm overflow-hidden">
+                <h2 className="text-base font-bold px-4 py-3 text-neutral-800 border-b border-neutral-200">What's Happening</h2>
 
-                {[
-                    { tag: '#webdev', posts: '12.4k posts', trend: 'Trending' },
-                    { tag: '#design', posts: '8.9k posts', trend: 'Trending' },
-                    { tag: '#react', posts: '6.2k posts', trend: 'Hot' },
-                    { tag: '#ai', posts: '15.7k posts', trend: 'Trending' },
-                ].map((item, i) => (
-                    <div key={i} className="px-4 py-3 hover:bg-neutral-400 cursor-pointer transition-colors flex justify-between items-center">
-                        <div>
-                            <p className="font-bold text-neutral-800 text-sm">{item.tag}</p>
-                            <p className="text-xs text-neutral-600 mt-0.5">{item.posts}</p>
+                <div className="flex flex-col">
+                    {isTrendingLoading ? (
+                        [1, 2, 3, 4].map(i => (
+                            <div key={i} className="px-4 py-3 animate-pulse">
+                                <div className="h-4 bg-neutral-200 rounded w-24 mb-2" />
+                                <div className="h-3 bg-neutral-200 rounded w-16" />
+                            </div>
+                        ))
+                    ) : whatsHappening?.trending_hashtags?.map((item, i) => (
+                        <div key={i} className="px-4 py-3 hover:bg-neutral-400 cursor-pointer transition-colors flex justify-between items-center group border-b border-neutral-200 last:border-0">
+                            <div className="min-w-0">
+                                <p className="font-bold text-neutral-800 text-sm group-hover:text-primary-300 transition-colors">
+                                    {item.hashtag}
+                                </p>
+                                <p className="text-xs text-neutral-600 mt-0.5">
+                                    {item.usage_count} posts • {item.trending_score.toFixed(1)} score
+                                </p>
+                            </div>
+                            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary-100/10 text-primary-300">
+                                Trending
+                            </span>
                         </div>
-                        <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${item.trend === 'Hot' ? 'bg-accent-300/20 text-accent-500' : 'bg-primary-100/10 text-primary-300'
-                            }`}>
-                            {item.trend}
-                        </span>
-                    </div>
-                ))}
+                    ))}
+
+                    {!isTrendingLoading && (!whatsHappening?.trending_hashtags || whatsHappening.trending_hashtags.length === 0) && (
+                        <p className="px-4 py-6 text-sm text-neutral-500 text-center">No trending topics yet.</p>
+                    )}
+                </div>
             </div>
 
             <div className="bg-neutral-100 rounded-2xl border border-neutral-300 shadow-sm">

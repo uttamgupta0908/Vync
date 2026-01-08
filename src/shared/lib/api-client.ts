@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { VYNC_API } from './constants';
 
 /**
  * Central API client
@@ -7,7 +8,7 @@ import axios from 'axios';
 export const apiClient = axios.create({
     // Real Vync API (proxied to avoid CORS on client, direct on server)
     baseURL: typeof window === 'undefined' 
-        ? 'https://api.vync.live' 
+        ? VYNC_API.BASE 
         : (process.env.NEXT_PUBLIC_API_URL || '/api/proxy'),
     timeout: 10000,
     withCredentials: true, // For cookies/auth
@@ -81,7 +82,8 @@ const responseInterceptor = async (error: any) => {
                 // Retry the original request
                 return apiClient(originalRequest);
             } catch (refreshError) {
-                console.error('Session refresh failed:', refreshError);
+                // Just warn, don't error - common for guests
+                console.warn('Session refresh attempt failed (expected for guests):', refreshError);
             }
         }
         console.warn('Unauthorized request - session may have expired');
@@ -134,4 +136,8 @@ export const localGet = <T>(url: string, params?: Record<string, unknown>) => {
 
 export const localPost = <T>(url: string, data?: unknown) => {
     return localApiClient.post<T>(url, data).then(res => res.data);
+};
+
+export const localDel = <T>(url: string) => {
+    return localApiClient.delete<T>(url).then(res => res.data);
 };

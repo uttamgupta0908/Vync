@@ -10,7 +10,7 @@ import { currentUser } from '@/src/shared/data/mock';
 import { useAuth } from '@/src/features/auth/hooks/useAuth';
 import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
 import { usePostDetail, useComments } from '../hooks/useFeed';
-import { FeedSkeleton } from '@/src/shared/ui/LoadingSkeleton';
+import { FeedSkeleton, PostDetailSkeleton } from '@/src/shared/ui/LoadingSkeleton';
 import ErrorState from '@/src/shared/ui/ErrorState';
 import { Avatar } from '@/src/shared/ui';
 
@@ -28,8 +28,8 @@ export default function PostDetailView({ id }: PostDetailViewProps) {
 
     if (authLoading || postLoading) {
         return (
-            <div className="flex-1 min-h-screen flex flex-col pt-16">
-                <FeedSkeleton />
+            <div className="flex-1 min-h-screen flex flex-col">
+                <PostDetailSkeleton />
             </div>
         );
     }

@@ -1,4 +1,5 @@
 import { Conversation, Message, Community } from '@/src/shared/contracts/schemas';
+
 import { LiveRoom, Speaker, Audience } from '@/src/features/live/services';
 
 export const mockConversations: Conversation[] = [
@@ -40,6 +41,7 @@ export const mockCommunities: Community[] = [
         image: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=400&h=400&fit=crop',
         category: 'Technology',
         isJoined: false,
+        followers_count: 45000,
     },
     {
         id: '2',
@@ -49,6 +51,7 @@ export const mockCommunities: Community[] = [
         image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=400&fit=crop',
         category: 'Design',
         isJoined: true,
+        followers_count: 32000,
     },
     {
         id: '3',
@@ -58,6 +61,7 @@ export const mockCommunities: Community[] = [
         image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=400&fit=crop',
         category: 'Gaming',
         isJoined: false,
+        followers_count: 128000,
     },
 ];
 
@@ -90,4 +94,21 @@ export const mockSpeakers: Speaker[] = [
 export const mockAudience: Audience[] = [
     { id: 'a1', name: 'User 1', avatar: '' },
     { id: 'a2', name: 'User 2', avatar: '' },
+];
+
+export const mockTrendingHashtags = [
+    {
+        hashtag: "#tech",
+        usage_count: 142,
+        last_used: "2026-01-05T13:45:00+05:30",
+        total_engagement: 450,
+        trending_score: 234.4
+    },
+    {
+        hashtag: "#coding",
+        usage_count: 98,
+        last_used: "2026-01-05T12:30:00+05:30",
+        total_engagement: 320,
+        trending_score: 164.6
+    }
 ];

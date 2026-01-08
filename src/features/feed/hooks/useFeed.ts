@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery, InfiniteData } from '@tanstack/react-query';
-import { fetchFeed, fetchPostById, likePost, unlikePost, fetchPostComments } from '../services';
+import { fetchFeed, fetchPostById, likePost, unlikePost, fetchPostComments, fetchWhatsHappening, savePost, unsavePost } from '../services';
 import { queryKeys } from '@/src/shared/lib/query-client';
 import { Post, FeedResponse } from '@/src/shared/contracts/schemas'; // Assuming types export here or index
 import { useAuth } from '@/src/features/auth/hooks/useAuth';
@@ -22,6 +22,17 @@ export function useFeed() {
             return allPages.length * 20;
         },
         staleTime: 30000,
+    });
+}
+
+/**
+ * Hook to fetch "What's Happening" data
+ */
+export function useWhatsHappening() {
+    return useQuery({
+        queryKey: queryKeys.whatsHappening,
+        queryFn: fetchWhatsHappening,
+        staleTime: 60000 * 5, // 5 minutes
     });
 }
 
@@ -136,6 +147,83 @@ export function useLikePost() {
         },
 
         // Always refetch after error or success to ensure server state is correct
+        onSettled: (_data, _error, variables) => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.feed });
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.post(variables.postId),
+            });
+        },
+    });
+}
+/**
+ * Hook to save/unsave a post with optimistic updates
+ */
+export function useSavePost() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({
+            postId,
+            is_saved,
+        }: {
+            postId: string;
+            is_saved: boolean;
+        }) => {
+            return is_saved ? unsavePost(postId) : savePost(postId);
+        },
+
+        onMutate: async ({ postId, is_saved }) => {
+            await queryClient.cancelQueries({ queryKey: queryKeys.feed });
+            await queryClient.cancelQueries({ queryKey: queryKeys.post(postId) });
+
+            const previousFeed = queryClient.getQueryData<InfiniteData<FeedResponse>>(queryKeys.feed);
+            const previousPost = queryClient.getQueryData<Post>(queryKeys.post(postId));
+
+            // Optimistically update feed list
+            queryClient.setQueryData<InfiniteData<FeedResponse>>(queryKeys.feed, (old) => {
+                if (!old) return old;
+                return {
+                    ...old,
+                    pages: old.pages.map((page) => ({
+                        ...page,
+                        results: page.results.map((post) =>
+                            post.id === postId
+                                ? {
+                                    ...post,
+                                    is_saved: !is_saved,
+                                    saves: (post.saves || 0) + (is_saved ? -1 : 1),
+                                }
+                                : post
+                        ),
+                    })),
+                };
+            });
+
+            // Optimistically update post detail
+            queryClient.setQueryData<Post>(queryKeys.post(postId), (old) => {
+                if (!old) return old;
+                return {
+                    ...old,
+                    is_saved: !is_saved,
+                    saves: (old.saves || 0) + (is_saved ? -1 : 1),
+                };
+            });
+
+            return { previousFeed, previousPost };
+        },
+
+        onError: (_err, variables, context) => {
+            if (context?.previousFeed) {
+                queryClient.setQueryData(queryKeys.feed, context.previousFeed);
+            }
+            if (context?.previousPost) {
+                queryClient.setQueryData(
+                    queryKeys.post(variables.postId),
+                    context.previousPost
+                );
+            }
+        },
+
         onSettled: (_data, _error, variables) => {
             queryClient.invalidateQueries({ queryKey: queryKeys.feed });
             queryClient.invalidateQueries({

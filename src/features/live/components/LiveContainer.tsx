@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useLiveRooms, useLiveRoom } from '../hooks/useLive';
 import LiveRoomList from './LiveRoomList';
 import ActiveRoom from './ActiveRoom';
-import { FeedSkeleton } from '@/src/shared/ui/LoadingSkeleton';
+import { LiveRoomSkeleton } from '@/src/shared/ui/LoadingSkeleton';
 import ErrorState from '@/src/shared/ui/ErrorState';
 
 /**
@@ -24,17 +24,6 @@ export default function LiveContainer() {
         isLoading: roomLoading
     } = useLiveRoom(selectedRoomId);
 
-    if (roomsLoading) {
-        return (
-            <div className="flex overflow-hidden p-6 sm:p-8 gap-6 w-full mx-0">
-                <div className="w-1/3">
-                    <FeedSkeleton />
-                </div>
-                <div className="flex-1 bg-neutral-100 rounded-3xl animate-pulse" />
-            </div>
-        );
-    }
-
     if (roomsError) {
         return <ErrorState message="Failed to load live rooms." />;
     }
@@ -45,6 +34,7 @@ export default function LiveContainer() {
                 rooms={rooms || []}
                 selectedId={selectedRoomId}
                 onSelect={setSelectedRoomId}
+                isLoading={roomsLoading}
             />
             <ActiveRoom
                 room={activeRoom}

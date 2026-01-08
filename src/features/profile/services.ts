@@ -33,8 +33,7 @@ export const fetchUserProfile = async (username: string): Promise<User> => {
     }
 
     try {
-        // Call our local Next.js API route which handles Auth headers and fallbacks
-        // This avoids the issue where client-side proxy calls lack the HttpOnly cookie/token
+        // Use the centralized user proxy
         const data = await localGet<any>(`/api/users/${normalizedUsername}`);
         
         // Handle wrapped response
@@ -52,13 +51,11 @@ export const fetchUserProfile = async (username: string): Promise<User> => {
 export const fetchUserPosts = async (username: string): Promise<ProfilePost[]> => {
     const normalizedUsername = username.startsWith('@') ? username.substring(1) : username;
     
-    // Call real API
-    const response = await get<any>(`/api/v1/users/${normalizedUsername}/posts/`);
+    // Proxy through feed to get posts for a user
+    const response = await localGet<any>(`/api/feed/users/${normalizedUsername}/posts`);
     
-    // Handle wrapped response logic: { results: [...] } or { posts: [...] } or direct [...]
     const postsData = response?.results || response?.posts || (Array.isArray(response) ? response : []);
     
-    // Validate each post in the array
     return postsData.map((p: any) => PostSchema.parse(p));
 };
 
@@ -66,12 +63,12 @@ export const fetchUserPosts = async (username: string): Promise<ProfilePost[]> =
  * Follow a user
  */
 export const followUser = async (userId: string): Promise<void> => {
-    return post(`/users/${userId}/follow`);
+    return post(`/api/users/${userId}/follow`);
 };
 
 /**
  * Unfollow a user
  */
 export const unfollowUser = async (userId: string): Promise<void> => {
-    return post(`/users/${userId}/unfollow`);
+    return post(`/api/users/${userId}/unfollow`);
 };

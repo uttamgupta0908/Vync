@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Search, Bell, Plus, LogOut, User, Settings, ChevronDown } from 'lucide-react';
-import { currentUser } from '@/src/shared/data/mock';
 import { Avatar } from '@/src/shared/ui';
 import { useAuth, useLogout } from '@/src/features/auth/hooks/useAuth';
 import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
@@ -119,8 +118,8 @@ export default function HomeHeader() {
                                 className="flex items-center gap-2 p-1 pr-2 rounded-full hover:bg-neutral-200 transition-colors border border-transparent hover:border-neutral-300"
                             >
                                 <Avatar
-                                    src={user?.avatar_url || currentUser.avatar_url || ''}
-                                    alt={user?.full_name || currentUser.full_name || 'User'}
+                                    src={user?.avatar_url || ''}
+                                    alt={user?.full_name || 'User'}
                                     className="w-8 h-8 sm:w-9 sm:h-9 border border-neutral-300"
                                 />
                                 <ChevronDown className={`w-4 h-4 text-neutral-500 transition-transform duration-200 ${isMenuOpen ? 'rotate-180' : ''}`} />

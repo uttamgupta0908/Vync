@@ -13,6 +13,11 @@ export const backendClient = axios.create({
 
 // Request Interceptor: Attach Token
 backendClient.interceptors.request.use(async (config) => {
+    // Skip attaching access token for refresh endpoint
+    if (config.url?.includes(VYNC_API.AUTH.REFRESH)) {
+        return config;
+    }
+
     const token = await getAccessToken();
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -33,7 +38,9 @@ backendClient.interceptors.response.use(
             try {
                 const refreshToken = await getRefreshToken();
                 if (!refreshToken) {
-                    throw new Error('No refresh token available');
+                    // No refresh token means we are a guest or session expired
+                    // Propagate the original 401 error so the client knows
+                    return Promise.reject(error);
                 }
 
                 // Attempt refresh
@@ -56,7 +63,10 @@ backendClient.interceptors.response.use(
 
             } catch (refreshError) {
                 console.error('Server-side token refresh failed:', refreshError);
-                return Promise.reject(refreshError);
+                // If refresh fails, reject with the ORIGINAL error (401) if possible, 
+                // or the refresh error if strictly needed. 
+                // Usually better to return the original 401 to signal "Login required".
+                return Promise.reject(error);
             }
         }
         return Promise.reject(error);

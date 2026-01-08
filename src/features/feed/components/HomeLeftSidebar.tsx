@@ -3,18 +3,33 @@ import { currentUser } from '@/src/shared/data/mock';
 import { Avatar } from '@/src/shared/ui';
 import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
 import { useAuth } from '@/src/features/auth/hooks/useAuth';
+import { useTrendingCommunities, useToggleJoinCommunity } from '@/src/features/communities/hooks/useCommunities';
+import { Users, ArrowRight, ChevronRight } from 'lucide-react';
+import toast from 'react-hot-toast';
+
 export default function HomeLeftSidebar() {
     // const { isAuthenticated, user, openLoginModal } = useAuthUI();
     const { user, isAuthenticated, isLoading } = useAuth();
     const { openLoginModal } = useAuthUI();
 
+    const { data: trendingData, isLoading: isTrendingLoading } = useTrendingCommunities();
+    const { mutate: toggleJoin, isPending: isJoining } = useToggleJoinCommunity();
+    const trendingCommunities = trendingData?.trending_communities?.slice(0, 3);
 
-    const handleJoinClick = (e: React.MouseEvent) => {
+    const handleJoin = (e: React.MouseEvent, communityId: string, isJoined: boolean) => {
         e.preventDefault();
         e.stopPropagation();
+
         if (!isAuthenticated) {
             openLoginModal();
+            return;
         }
+
+        toggleJoin({ communityId, isJoined }, {
+            onSuccess: () => {
+                toast.success(isJoined ? 'Left community' : 'Joined community!');
+            }
+        });
     };
 
     const formatCount = (value?: number | null) => {
@@ -25,6 +40,7 @@ export default function HomeLeftSidebar() {
     }
 
     return (
+
         <aside className="w-[230px] hidden sm:flex flex-col gap-4 sticky top-16 h-fit left-4 pt-6">
             {/* Profile Card or Guest Card */}
             <div className="bg-neutral-100 rounded-2xl border border-neutral-300 shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-300 p-5">
@@ -90,34 +106,81 @@ export default function HomeLeftSidebar() {
             </div>
 
             {/* Trending Communities */}
-            <div className="bg-neutral-100 rounded-2xl border border-neutral-300 shadow-sm p-4 hover:shadow-md transition-shadow duration-300">
-                <h3 className="font-bold text-neutral-800 mb-3 text-sm">Trending Communities</h3>
-                <div className="space-y-2">
-                    {[
-                        { name: 'r/WebDev', members: '45.2k', icon: '💻', color: 'from-primary-100 to-primary-300' },
-                        { name: 'r/Design', members: '32.8k', icon: '🎨', color: 'from-accent-500 to-primary-400' },
-                        { name: 'r/Gaming', members: '128k', icon: '🎮', color: 'from-success-500 to-success-400' }
-                    ].map((community) => (
-                        <div key={community.name} className="flex items-center justify-between p-2 hover:bg-gradient-to-r hover:from-primary-100/10 hover:to-primary-300/10 rounded-xl transition-all duration-200 cursor-pointer group">
-                            <div className="flex items-center gap-2.5 min-w-0">
-                                <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${community.color} flex items-center justify-center text-neutral-100 text-base shadow-sm group-hover:scale-110 transition-transform duration-200`}>
-                                    {community.icon}
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="font-bold text-xs text-neutral-800 group-hover:text-primary-300 transition-colors truncate">{community.name}</p>
-                                    <p className="text-[10px] text-neutral-600">{community.members} members</p>
+            <div className="bg-neutral-100 rounded-2xl border border-neutral-300 shadow-sm p-5 hover:shadow-md transition-shadow duration-300">
+                <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-bold text-neutral-800 text-sm">Trending Communities</h3>
+
+                </div>
+
+                <div className="flex flex-col gap-5">
+                    {isTrendingLoading ? (
+                        // Skeleton Loading
+                        [1, 2, 3].map(i => (
+                            <div key={i} className="flex items-center gap-3 animate-pulse">
+                                <div className="w-10 h-10 bg-neutral-200 rounded-lg" />
+                                <div className="flex-1 space-y-2">
+                                    <div className="h-4 bg-neutral-200 rounded w-24" />
+                                    <div className="h-3 bg-neutral-200 rounded w-16" />
                                 </div>
                             </div>
-                            <button
-                                onClick={handleJoinClick}
-                                className="text-[10px] font-bold text-primary-300 bg-primary-100/10 px-2.5 py-1 rounded-xl hover:bg-primary-300 hover:text-neutral-100 hover:shadow-md transition-all duration-200 flex-shrink-0"
+                        ))
+                    ) : trendingCommunities?.map((community) => (
+                        <div key={community.id} className="group  flex items-center justify-between">
+                            <Link
+                                href={`/communities/${community.slug || community.id}`}
+                                className="flex items-center gap-3 mb-2.5"
                             >
-                                Join
+                                <img
+                                    src={community.image || community.cover || `https://ui-avatars.com/api/?name=${encodeURIComponent(community.name)}&background=random`}
+                                    alt={community.name}
+                                    className="w-10 h-10 rounded-lg object-cover group-hover:scale-105 transition-transform border border-neutral-200"
+                                />
+                                <div className="flex flex-col min-w-0">
+                                    <span className="font-semibold text-sm text-neutral-800 truncate">
+                                        {community.name}
+                                    </span>
+                                    <span className="text-[11px] text-neutral-500 truncate">
+                                        {formatCount(community.followers_count || community.members)} members
+                                    </span>
+                                </div>
+                            </Link>
+                            <button
+                                onClick={(e) => handleJoin(e, community.id, !!community.isJoined)}
+                                disabled={isJoining}
+                                className={`ml-3 w-16 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ${community.isJoined
+                                    ? 'bg-neutral-200 text-neutral-600 hover:bg-neutral-300'
+                                    : 'bg-primary-300 text-neutral-100 hover:bg-primary-200 shadow-sm hover:shadow'
+                                    }`}
+                            >
+                                {community.isJoined ? 'Joined' : 'Join'}
                             </button>
                         </div>
                     ))}
+
+                    {!isTrendingLoading && (!trendingCommunities || trendingCommunities.length === 0) && (
+                        <p className="text-xs text-neutral-500 text-center py-2">No trending communities yet.</p>
+                    )}
                 </div>
+
+                {!isTrendingLoading && trendingCommunities && trendingCommunities.length > 0 && (
+
+                    <Link
+                        href="/communities"
+                        onClick={(e) => {
+                            if (!isAuthenticated) {
+                                e.preventDefault();
+                                openLoginModal();
+                            }
+                        }}
+                        className=" mt-3 pt-3 border-t border-neutral-200 flex items-center justify-center gap-2 text-[12px] font-bold tracking-widest text-neutral-800 hover:text-neutral-600 transition-colors group
+  ">
+                        <span>View All</span>
+                        <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+                    </Link>
+
+                )}
             </div>
         </aside>
     );
 }
+

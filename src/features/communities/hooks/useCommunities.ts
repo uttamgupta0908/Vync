@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchCommunities, joinCommunity, leaveCommunity, Community } from '../services';
+import { fetchCommunities, joinCommunity, leaveCommunity, fetchTrendingCommunities, Community } from '../services';
 import { queryKeys } from '@/src/shared/lib/query-client';
 
 /**
@@ -12,6 +12,18 @@ export function useCommunities(category?: string) {
         staleTime: 60000, // 1 minute
     });
 }
+
+/**
+ * Hook to fetch trending communities
+ */
+export function useTrendingCommunities() {
+    return useQuery({
+        queryKey: queryKeys.trendingCommunities,
+        queryFn: fetchTrendingCommunities,
+        staleTime: 60000 * 5, // 5 minutes
+    });
+}
+
 
 /**
  * Hook to join/leave a community with optimistic updates
@@ -40,7 +52,7 @@ export function useToggleJoinCommunity() {
                         return {
                             ...community,
                             isJoined: !isJoined,
-                            members: isJoined ? community.members - 1 : community.members + 1,
+                            members: isJoined ? (community.members || 1) - 1 : (community.members || 0) + 1,
                         };
                     }
                     return community;
