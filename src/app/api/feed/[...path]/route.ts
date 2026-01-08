@@ -29,10 +29,16 @@ async function proxyRequest(
             response = await backendClient.delete(backendPath);
         }
 
-        return NextResponse.json(response?.data || {});
+        const responseData = response?.data || {};
+        console.log(`[Feed Proxy Debug] SUCCESS ${backendPath}: ${Object.keys(responseData).length} keys in response`);
+        return NextResponse.json(responseData);
     } catch (error: any) {
         const { message } = mapError(error);
-        console.error(`Feed Proxy Error [${method.toUpperCase()} ${backendPath}]:`, error.response?.data || error.message);
+        console.error(`[Feed Proxy Debug] ERROR ${method.toUpperCase()} ${backendPath}:`, {
+            status: error.response?.status,
+            data: error.response?.data,
+            message: error.message
+        });
         
         return NextResponse.json(
             { 

@@ -25,13 +25,22 @@ async function proxyRequest(
             response = await backendClient.delete(backendPath);
         }
 
-        return NextResponse.json(response?.data || {});
+        const responseData = response?.data || {};
+        console.log(`[Community Proxy Debug] SUCCESS ${backendPath}: ${Object.keys(responseData).length} keys in response`);
+        return NextResponse.json(responseData);
     } catch (error: any) {
-        const { message, status } = mapError(error) as any; // Using mapError logic
-        console.error(`Community Proxy Error [${method.toUpperCase()} ${backendPath}]:`, error.response?.data || error.message);
+        const { message } = mapError(error);
+        console.error(`[Community Proxy Debug] ERROR ${method.toUpperCase()} ${backendPath}:`, {
+            status: error.response?.status,
+            data: error.response?.data,
+            message: error.message
+        });
         
         return NextResponse.json(
-            { error: message, details: error.response?.data || error.message },
+            { 
+                error: message, 
+                details: error.response?.data || error.message 
+            },
             { status: error.response?.status || 500 }
         );
     }
