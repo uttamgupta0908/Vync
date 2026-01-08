@@ -1,11 +1,33 @@
-import { CommunitySchema, type Community } from '@/src/shared/contracts/schemas';
+import { CommunitySchema, TrendingCommunitySchema, TrendingCommunitiesResponseSchema, type Community, type TrendingCommunity, type TrendingCommunitiesResponse } from '@/src/shared/contracts/schemas';
 export { CommunitySchema, type Community };
 import { z } from 'zod';
+import { localGet } from '@/src/shared/lib/api-client';
 
+/**
+ * Fetch trending communities
+ * Proxy: /api/community/communities/trending -> Backend: /api/v1/community/communities/trending/
+ */
+export const fetchTrendingCommunities = async (): Promise<TrendingCommunitiesResponse> => {
+    try {
+        const response = await localGet<any>('/api/community/communities/trending');
+        console.log('[Community Service Debug] fetchTrendingCommunities response keys:', Object.keys(response || {}));
+        return TrendingCommunitiesResponseSchema.parse(response);
+    } catch (error: any) {
+        // If unauthorized (guest), return empty structure
+        // If unauthorized (guest), return mock data instead of empty structure
+        if (error?.response?.status === 401 || error?.status === 401) {
+            console.debug('[Community Service] Guest user - returning mock trending communities');
+            // Ensure we return valid TrendingCommunity objects (Community fits if sample_members optional)
+            return { trending_communities: mockCommunities };
+        }
+        console.error('[Community Service Debug] fetchTrendingCommunities FAILED:', error.message || error);
+        throw error;
+    }
+};
 
 
 /**
- * Fetch all communities
+ * Fetch all communities (Mock fallback for now)
  */
 export const fetchCommunities = async (category?: string): Promise<Community[]> => {
     // Mock data for now
