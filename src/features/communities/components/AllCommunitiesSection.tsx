@@ -51,6 +51,7 @@ export default function AllCommunitiesSection({ communities }: AllCommunitiesSec
                             description={community.description || ""}
                             memberCount={`${community.followers_count || community.members || 0}`}
                             icon={getIcon(community.category || '')}
+                            iconUrl={community.image || undefined}
                             headerColor={getHeaderColor(community.category || '')}
                             tag={community.category || undefined}
                             variant="default"

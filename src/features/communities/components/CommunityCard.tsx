@@ -8,6 +8,7 @@ interface CommunityCardProps {
     handle: string;
     description: string;
     icon?: LucideIcon;
+    iconUrl?: string; // URL for community image from API
     memberCount: string;
     postCount?: string; // For trending
     tag?: string; // For all communities
@@ -22,6 +23,7 @@ export default function CommunityCard({
     handle,
     description,
     icon: Icon,
+    iconUrl,
     memberCount,
     postCount,
     tag,
@@ -55,8 +57,12 @@ export default function CommunityCard({
                 {/* Header with color */}
                 <div className={`h-24 ${headerColor} relative`}>
                     <div className="absolute -bottom-6 left-6 w-12 h-12 bg-neutral-100 rounded-2xl flex items-center justify-center p-1 shadow-sm">
-                        <div className={`w-full h-full rounded-xl bg-neutral-400 flex items-center justify-center group-hover:scale-105 transition-transform`}>
-                            <DisplayIcon className={`w-6 h-6 ${getIconColorClass()}`} />
+                        <div className={`w-full h-full rounded-xl ${!iconUrl && 'bg-neutral-400'} flex items-center justify-center group-hover:scale-105 transition-transform overflow-hidden`}>
+                            {iconUrl ? (
+                                <img src={iconUrl} alt={name} className="w-full h-full object-cover rounded-xl" />
+                            ) : (
+                                <DisplayIcon className={`w-6 h-6 ${getIconColorClass()}`} />
+                            )}
                         </div>
                     </div>
                 </div>
@@ -107,8 +113,12 @@ export default function CommunityCard({
     return (
         <div className="bg-neutral-100 rounded-2xl p-5 border border-neutral-300 hover:border-neutral-400 hover:shadow-lg transition-all duration-300 h-full flex flex-col group">
             <div className="flex mb-4">
-                <div className={`w-12 h-12 rounded-2xl ${headerColor} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 text-neutral-100 shadow-sm`}>
-                    <DisplayIcon className="w-6 h-6" />
+                <div className={`w-12 h-12 rounded-2xl ${!iconUrl && headerColor} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 ${!iconUrl && 'text-neutral-100'} shadow-sm overflow-hidden`}>
+                    {iconUrl ? (
+                        <img src={iconUrl} alt={name} className="w-full h-full object-cover rounded-2xl" />
+                    ) : (
+                        <DisplayIcon className="w-6 h-6" />
+                    )}
                 </div>
             </div>
 
