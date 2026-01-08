@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useCommunities } from '../hooks/useCommunities';
-import { FeedSkeleton } from '@/src/shared/ui/LoadingSkeleton';
+import { FeedSkeleton, CommunitySkeleton } from '@/src/shared/ui/LoadingSkeleton';
 import ErrorState from '@/src/shared/ui/ErrorState';
 import CategoryFilter from './CategoryFilter';
 import TrendingSection from './TrendingSection';
@@ -18,25 +18,6 @@ export default function CommunitiesContainer() {
     const [activeCategory, setActiveCategory] = React.useState('All');
     const categories = ['All', 'Trending', 'Technology', 'Design', 'Sports', 'Entertainment', 'Gaming'];
     const { data: communities, isLoading, error, refetch } = useCommunities(activeCategory);
-
-    if (isLoading) {
-        return (
-            <div className="p-8 max-w-[1600px] mx-auto">
-                <FeedSkeleton />
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="p-8 max-w-[1600px] mx-auto">
-                <ErrorState
-                    message="Failed to load communities. Please try again."
-                    retry={() => refetch()}
-                />
-            </div>
-        );
-    }
 
     return (
         <div className="p-8 max-w-[1600px] mx-auto">
@@ -66,15 +47,32 @@ export default function CommunitiesContainer() {
                 />
             </div>
 
-            <div className="space-y-10">
-                {(activeCategory === 'Trending' || activeCategory === 'All') && (
-                    <TrendingSection />
-                )}
+            {error ? (
+                <ErrorState
+                    message="Failed to load communities. Please try again."
+                    retry={() => refetch()}
+                />
+            ) : (
+                <div className="space-y-10">
+                    {(activeCategory === 'Trending' || activeCategory === 'All') && (
+                        <TrendingSection />
+                    )}
 
-                <div>
-                    <AllCommunitiesSection communities={communities || []} />
+                    <div className="min-h-[400px]">
+                        {isLoading ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                {Array.from({ length: 8 }).map((_, i) => (
+                                    <div key={i} className="h-[280px]">
+                                        <CommunitySkeleton variant="default" />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <AllCommunitiesSection communities={communities || []} />
+                        )}
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

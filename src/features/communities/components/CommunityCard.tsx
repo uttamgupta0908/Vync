@@ -1,11 +1,13 @@
+'use client';
+
 import React from 'react';
-import { LucideIcon, Users, MessageSquare } from 'lucide-react';
+import { LucideIcon, Users, MessageSquare, Layout } from 'lucide-react';
 
 interface CommunityCardProps {
     name: string;
     handle: string;
     description: string;
-    icon: LucideIcon;
+    icon?: LucideIcon;
     memberCount: string;
     postCount?: string; // For trending
     tag?: string; // For all communities
@@ -27,6 +29,8 @@ export default function CommunityCard({
     headerColor = 'bg-neutral-400',
     badge
 }: CommunityCardProps) {
+    const DisplayIcon = Icon || Layout;
+
     // Helper to get icon color based on header color for harmony
     const getIconColorClass = () => {
         if (headerColor.includes('purple')) return 'text-primary-200';
@@ -52,7 +56,7 @@ export default function CommunityCard({
                 <div className={`h-24 ${headerColor} relative`}>
                     <div className="absolute -bottom-6 left-6 w-12 h-12 bg-neutral-100 rounded-2xl flex items-center justify-center p-1 shadow-sm">
                         <div className={`w-full h-full rounded-xl bg-neutral-400 flex items-center justify-center group-hover:scale-105 transition-transform`}>
-                            <Icon className={`w-6 h-6 ${getIconColorClass()}`} />
+                            <DisplayIcon className={`w-6 h-6 ${getIconColorClass()}`} />
                         </div>
                     </div>
                 </div>
@@ -104,7 +108,7 @@ export default function CommunityCard({
         <div className="bg-neutral-100 rounded-2xl p-5 border border-neutral-300 hover:border-neutral-400 hover:shadow-lg transition-all duration-300 h-full flex flex-col group">
             <div className="flex mb-4">
                 <div className={`w-12 h-12 rounded-2xl ${headerColor} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300 text-neutral-100 shadow-sm`}>
-                    <Icon className="w-6 h-6" />
+                    <DisplayIcon className="w-6 h-6" />
                 </div>
             </div>
 
