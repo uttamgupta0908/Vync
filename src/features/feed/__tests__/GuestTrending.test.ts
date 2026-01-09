@@ -1,5 +1,5 @@
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fetchWhatsHappening } from '../services';
 import { fetchTrendingCommunities } from '../../communities/services';
 import { mockTrendingHashtags, mockCommunities } from '@/src/shared/data/__mocks__/data';
