@@ -43,7 +43,7 @@ export default function LiveRoomList({
                     {['All', 'Audio', 'Video'].map((f) => (
                         <button
                             key={f}
-                            onClick={() => setFilter(f as any)}
+                            onClick={() => setFilter(f as 'All' | 'Audio' | 'Video')}
                             className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 ${filter === f ? 'bg-neutral-100 text-neutral-900 shadow-sm' : 'text-neutral-600 hover:text-neutral-800 hover:bg-neutral-100/50'
                                 }`}
                         >

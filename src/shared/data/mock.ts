@@ -1,5 +1,4 @@
 import { Post, User } from "@/src/shared/types";
-import { useEffect, useState } from "react";
 
 export const currentUser: User = {
   id: "u1",

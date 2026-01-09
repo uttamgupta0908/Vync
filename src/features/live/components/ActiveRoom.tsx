@@ -1,5 +1,5 @@
 import { Mic, Share, MoreVertical, Hand, MessageSquare, Volume2, LogOut, Users, Plus as PlusIcon } from 'lucide-react';
-import { Avatar, IconButton, Spinner } from '@/src/shared/ui';
+import { Avatar, Spinner } from '@/src/shared/ui';
 import { LiveRoomDetail } from '../services';
 
 interface ActiveRoomProps {

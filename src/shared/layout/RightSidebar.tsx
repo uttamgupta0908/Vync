@@ -30,7 +30,7 @@ export default function RightSidebar() {
     return (
         <div className="w-[350px] ml-[-24px] hidden lg:block space-y-6 py-6 sticky top-6 h-screen overflow-y-auto p-4">
             <div className="bg-neutral-100 rounded-2xl border border-neutral-300 shadow-sm overflow-hidden">
-                <h2 className="text-base font-bold px-4 py-3 text-neutral-800 border-b border-neutral-200">What's Happening</h2>
+                <h2 className="text-base font-bold px-4 py-3 text-neutral-800 border-b border-neutral-200">What&apos;s Happening</h2>
 
                 <div className="flex flex-col">
                     {isTrendingLoading ? (
