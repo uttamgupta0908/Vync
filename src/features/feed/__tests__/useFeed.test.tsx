@@ -40,7 +40,7 @@ describe('useFeed', () => {
             generated_at: new Date().toISOString()
         };
 
-        (services.fetchFeed as any).mockResolvedValue(mockData);
+        (services.fetchFeed as ReturnType<typeof vi.fn>).mockResolvedValue(mockData);
 
         const { result } = renderHook(() => useFeed(), { wrapper });
 
@@ -66,7 +66,7 @@ describe('useFeed', () => {
             generated_at: new Date().toISOString()
         };
 
-        (services.fetchFeed as any)
+        (services.fetchFeed as ReturnType<typeof vi.fn>)
             .mockResolvedValueOnce(page1)
             .mockResolvedValueOnce(page2);
 

@@ -37,7 +37,7 @@ describe('useSendMessage', () => {
 
         queryClient.setQueryData(queryKey, []);
 
-        (services.sendMessage as any).mockImplementation(() =>
+        (services.sendMessage as ReturnType<typeof vi.fn>).mockImplementation(() =>
             new Promise(resolve => setTimeout(() => resolve({ id: 'real-id', text, senderId: 'me', timestamp: 'Just now', isMe: true }), 10))
         );
 
@@ -58,11 +58,11 @@ describe('useSendMessage', () => {
 
         queryClient.setQueryData(queryKey, previousMessages);
 
-        (services.sendMessage as any).mockImplementation(() =>
+        (services.sendMessage as ReturnType<typeof vi.fn>).mockImplementation(() =>
             new Promise((_, reject) => setTimeout(() => reject(new Error('Network Error')), 100))
         );
         // Important: mock fetchMessages to return the original state so invalidation doesn't break our check
-        (services.fetchMessages as any).mockResolvedValue(previousMessages);
+        (services.fetchMessages as ReturnType<typeof vi.fn>).mockResolvedValue(previousMessages);
 
         const { result } = renderHook(() => useSendMessage(), { wrapper });
 
@@ -71,7 +71,7 @@ describe('useSendMessage', () => {
 
         // 1. Check optimistic update
         await waitFor(() => {
-            const data = queryClient.getQueryData(queryKey) as any[];
+            const data = queryClient.getQueryData(queryKey) as unknown[];
             expect(data?.length).toBe(2);
         });
 
@@ -82,9 +82,9 @@ describe('useSendMessage', () => {
 
         // 3. Check rollback (using a relaxed check for contents since timestamp/id might be dynamic)
         await waitFor(() => {
-            const data = queryClient.getQueryData(queryKey) as any[];
+            const data = queryClient.getQueryData(queryKey) as unknown[];
             expect(data).toHaveLength(1);
-            expect(data[0].id).toBe('old');
+            expect((data[0] as { id: string }).id).toBe('old');
         });
     });
 });

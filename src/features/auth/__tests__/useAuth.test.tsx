@@ -47,7 +47,7 @@ describe('useAuth', () => {
 
     it('returns user data when authenticated', async () => {
         const mockUser = { id: '1', username: 'testuser', email: 'test@vync.live' };
-        (authService.getCurrentUser as any).mockResolvedValue(mockUser);
+        (authService.getCurrentUser as ReturnType<typeof vi.fn>).mockResolvedValue(mockUser);
 
         const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -61,7 +61,7 @@ describe('useAuth', () => {
         const mockUser = { id: '1', username: 'testuser' };
         const credentials = { email: 'test@vync.live', password: 'password' };
 
-        (authService.login as any).mockResolvedValue({ user: mockUser });
+        (authService.login as ReturnType<typeof vi.fn>).mockResolvedValue({ user: mockUser });
 
         const { result } = renderHook(() => useAuth(), { wrapper });
 
@@ -73,7 +73,7 @@ describe('useAuth', () => {
     });
 
     it('handles logout', async () => {
-        (authService.logout as any).mockResolvedValue({ success: true });
+        (authService.logout as ReturnType<typeof vi.fn>).mockResolvedValue({ success: true });
 
         const { result } = renderHook(() => useAuth(), { wrapper });
 
