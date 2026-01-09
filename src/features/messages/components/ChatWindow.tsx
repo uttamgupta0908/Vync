@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Plus, Smile, Paperclip, Send } from 'lucide-react';
 import { Avatar, Spinner } from '@/src/shared/ui';
 import { Message } from '../services';

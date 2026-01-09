@@ -1,10 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLiveRooms, useLiveRoom } from '../hooks/useLive';
 import LiveRoomList from './LiveRoomList';
 import ActiveRoom from './ActiveRoom';
-import { LiveRoomSkeleton } from '@/src/shared/ui/LoadingSkeleton';
 import ErrorState from '@/src/shared/ui/ErrorState';
 
 /**

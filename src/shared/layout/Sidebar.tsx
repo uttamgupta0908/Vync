@@ -25,7 +25,7 @@ interface SidebarProps {
 
 export default function Sidebar({ showLogo = false, fullHeight = false }: SidebarProps) {
     const pathname = usePathname();
-    const { user, isAuthenticated } = useAuth();
+    const { isAuthenticated } = useAuth();
     const { openLoginModal } = useAuthUI();
 
 

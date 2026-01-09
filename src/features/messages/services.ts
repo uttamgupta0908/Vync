@@ -1,4 +1,3 @@
-import { get, post } from '@/src/shared/lib/api-client';
 import { MessageSchema, ConversationSchema, type Message, type Conversation } from '@/src/shared/contracts/schemas';
 export { MessageSchema, ConversationSchema, type Message, type Conversation };
 import { z } from 'zod';
@@ -13,7 +12,7 @@ import { z } from 'zod';
  * Fetch all conversations
  */
 export const fetchConversations = async (): Promise<Conversation[]> => {
-    const data = await new Promise<any[]>((resolve) => {
+    const data = await new Promise<Conversation[]>((resolve) => {
         setTimeout(() => {
             resolve(mockConversations);
         }, 300);
@@ -26,7 +25,7 @@ export const fetchConversations = async (): Promise<Conversation[]> => {
  * Fetch messages for a conversation
  */
 export const fetchMessages = async (conversationId: string): Promise<Message[]> => {
-    const data = await new Promise<any[]>((resolve) => {
+    const data = await new Promise<Message[]>((resolve) => {
         setTimeout(() => {
             resolve(mockMessages[conversationId] || []);
         }, 300);
@@ -39,7 +38,7 @@ export const fetchMessages = async (conversationId: string): Promise<Message[]> 
  * Send a message
  */
 export const sendMessage = async (conversationId: string, text: string): Promise<Message> => {
-    const data = await new Promise<any>((resolve) => {
+    const data = await new Promise<Message>((resolve) => {
         setTimeout(() => {
             const newMessage: Message = {
                 id: Math.random().toString(36).substr(2, 9),

@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useFeed } from '../hooks/useFeed';
 import FeedList from './FeedList';
 import { FeedSkeleton } from '@/src/shared/ui/LoadingSkeleton';
 import ErrorState from '@/src/shared/ui/ErrorState';
+import { Post } from '@/src/shared/contracts/schemas';
 import { useIntersectionObserver } from '@/src/shared/hooks/useIntersectionObserver';
 import { Loader2 } from 'lucide-react';
 
@@ -38,7 +39,7 @@ export default function FeedContainer() {
 
     // Deduplicate posts to prevent key errors if backend/pagination overlaps
     const allPosts = data?.pages.flatMap((page) => page.results)
-        .reduce<any[]>((acc, post) => {
+        .reduce<Post[]>((acc, post) => {
             if (!acc.some(p => p.id === post.id)) {
                 acc.push(post);
             }

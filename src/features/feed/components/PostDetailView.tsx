@@ -1,16 +1,14 @@
 'use client';
 
-import React from 'react';
 import PostCard from './PostCard';
 import { DetailsHeader } from '@/src/shared/layout';
 import { Image, Smile } from 'lucide-react';
-import { Post } from '@/src/shared/types';
 import { currentUser } from '@/src/shared/data/mock';
 
 import { useAuth } from '@/src/features/auth/hooks/useAuth';
 import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
 import { usePostDetail, useComments } from '../hooks/useFeed';
-import { FeedSkeleton, PostDetailSkeleton } from '@/src/shared/ui/LoadingSkeleton';
+import { PostDetailSkeleton } from '@/src/shared/ui/LoadingSkeleton';
 import ErrorState from '@/src/shared/ui/ErrorState';
 import { Avatar } from '@/src/shared/ui';
 

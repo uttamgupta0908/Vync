@@ -4,7 +4,7 @@ import { Avatar } from '@/src/shared/ui';
 import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
 import { useAuth } from '@/src/features/auth/hooks/useAuth';
 import { useTrendingCommunities, useToggleJoinCommunity } from '@/src/features/communities/hooks/useCommunities';
-import { Users, ArrowRight, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function HomeLeftSidebar() {
