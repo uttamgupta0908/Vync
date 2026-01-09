@@ -1,8 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
-import { authService, type LoginCredentials } from '../services';
+import { authService } from '../services';
 import toast from 'react-hot-toast';
 import { queryKeys } from '@/src/shared/lib/query-client';
 
@@ -36,9 +35,14 @@ export function useLogin() {
             // Force reload to ensure fresh state
             window.location.reload();
         },
-        onError: (error: any) => {
+        onError: (error: unknown) => {
             console.error('Login failed:', error);
-            toast.error(error?.response?.data?.error || 'Login failed. Please try again.');
+            const errorMsg = 
+                (typeof error === 'object' && error !== null && 'response' in error &&
+                 typeof (error as { response?: { data?: { error?: string } } }).response?.data?.error === 'string')
+                    ? (error as { response: { data: { error: string } } }).response.data.error
+                    : 'Login failed. Please try again.';
+            toast.error(errorMsg);
         },
     });
 }
@@ -48,7 +52,6 @@ export function useLogin() {
  */
 export function useLogout() {
     const queryClient = useQueryClient();
-    const router = useRouter();
     
     return useMutation({
         mutationFn: authService.logout,
@@ -60,7 +63,7 @@ export function useLogout() {
             // Force reload and redirect to home
             window.location.href = '/';
         },
-        onError: (error: any) => {
+        onError: (error: unknown) => {
             toast.error('Logout failed. Please try again.');
         },
     });

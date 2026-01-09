@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { get, post, del, localGet, localPost, localDel } from '@/src/shared/lib/api-client';
+import { localGet, localPost, localDel } from '@/src/shared/lib/api-client';
 import {
   Post,
   FeedResponse,
@@ -29,8 +29,8 @@ export const fetchFeed = async ({ pageParam = 0 }: { pageParam?: number } = {}):
     // Validate response shape
     const validated = FeedResponseSchema.parse(response);
     return validated;
-  } catch (error: any) {
-    console.error('[Feed Service Debug] fetchFeed FAILED:', error.message || error);
+  } catch (error: unknown) {
+    console.error('[Feed Service Debug] fetchFeed FAILED:', error instanceof Error ? error.message : String(error));
     throw error;
   }
 };
@@ -55,15 +55,20 @@ export const fetchWhatsHappening = async (): Promise<WhatsHappeningResponse> => 
        };
     }
     return parsed;
-  } catch (error: any) {
+  } catch (error: unknown) {
     // If unauthorized (guest), return empty structure instead of throwing
     // If unauthorized (guest), return mock data instead of empty structure
-    if (error?.response?.status === 401 || error?.status === 401) {
+    if (
+      (typeof error === 'object' && error !== null && 'response' in error && 
+       (error as { response?: { status?: number } }).response?.status === 401) ||
+      (typeof error === 'object' && error !== null && 'status' in error &&
+       (error as { status?: number }).status === 401)
+    ) {
        console.debug('[Feed Service] Guest user - returning mock trending hashtags');
        const { mockTrendingHashtags } = await import('@/src/shared/data/__mocks__/data');
        return { trending_hashtags: mockTrendingHashtags };
     }
-    console.error('[Feed Service Debug] fetchWhatsHappening FAILED:', error.message || error);
+    console.error('[Feed Service Debug] fetchWhatsHappening FAILED:', error instanceof Error ? error.message : String(error));
     throw error;
   }
 };
@@ -113,10 +118,11 @@ export const unsavePost = async (postId: string): Promise<void> => {
  * Proxy: /api/feed/posts/{postId}/comments -> Backend: /api/v1/feed/posts/{postId}/comments/
  */
 export const fetchPostComments = async (postId: string): Promise<Comment[]> => {
-  const response = await localGet<any>(`/api/feed/posts/${postId}/comments`);
+  const response = await localGet<unknown>(`/api/feed/posts/${postId}/comments`);
   
-  // Handle potentially wrapped response
-  const commentsData = response.results || (Array.isArray(response) ? response : []);
+  // Handle potentially wrapped response with type guard
+  const responseAsRecord = response as Record<string, unknown>;
+  const commentsData = responseAsRecord.results || (Array.isArray(response) ? response : []);
   
   return z.array(CommentSchema).parse(commentsData);
 };

@@ -14,7 +14,7 @@ export const ERROR_MESSAGES = {
 /**
  * Maps API/Network errors to user-friendly messages and codes
  */
-export function mapError(error: unknown): { message: string; code: string; originalError: any } {
+export function mapError(error: unknown): { message: string; code: string; originalError: unknown } {
     let message: string = ERROR_MESSAGES.GENERIC;
     let code = 'UNKNOWN_ERROR';
     

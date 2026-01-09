@@ -40,7 +40,7 @@ apiClient.interceptors.request.use(
                 if (cookieString) {
                     config.headers.Cookie = cookieString;
                 }
-            } catch (e) {
+            } catch (err) {
                 // Handle cases where headers() is called outside of a request context
                 // (e.g., during static builds or background tasks)
             }
@@ -66,11 +66,21 @@ localApiClient.interceptors.request.use(
  * Response interceptor
  * Handle errors globally
  */
-const responseInterceptor = async (error: any) => {
-    const originalRequest = error.config;
+const responseInterceptor = async (error: unknown) => {
+    // Type guard for error with config property
+    if (!error || typeof error !== 'object' || !('config' in error)) {
+        return Promise.reject(error);
+    }
+
+    const axiosError = error as {
+        config?: { url?: string; _retry?: boolean };
+        response?: { status?: number; data?: unknown };
+    };
+
+    const originalRequest = axiosError.config;
 
     // Handle common errors
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (axiosError.response?.status === 401 && originalRequest && !originalRequest._retry) {
         // Unauthorized - cookie expired or invalid
         // Attempt to refresh if it's the main API and not already retrying
         if (originalRequest.url && !originalRequest.url.includes('/api/auth/')) {
@@ -89,8 +99,8 @@ const responseInterceptor = async (error: any) => {
         console.warn('Unauthorized request - session may have expired');
     }
     
-    if (error.response?.status === 500) {
-        console.error('Server error:', error.response.data);
+    if (axiosError.response?.status === 500) {
+        console.error('Server error:', axiosError.response.data);
     }
     
     return Promise.reject(error);

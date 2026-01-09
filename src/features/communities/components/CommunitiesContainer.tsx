@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useCommunities } from '../hooks/useCommunities';
-import { FeedSkeleton, CommunitySkeleton } from '@/src/shared/ui/LoadingSkeleton';
+import { CommunitySkeleton } from '@/src/shared/ui/LoadingSkeleton';
 import ErrorState from '@/src/shared/ui/ErrorState';
 import CategoryFilter from './CategoryFilter';
 import TrendingSection from './TrendingSection';

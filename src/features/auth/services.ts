@@ -34,7 +34,7 @@ export const authService = {
     /**
      * Register new user
      */
-    register: async (credentials: RegisterCredentials): Promise<any> => {
+    register: async (credentials: RegisterCredentials): Promise<unknown> => {
         return localPost('/api/auth/register', credentials);
     },
     

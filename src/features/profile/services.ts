@@ -1,4 +1,4 @@
-import { get, post, localGet } from '@/src/shared/lib/api-client';
+import { post, localGet } from '@/src/shared/lib/api-client';
 
 import { authService, type User } from '@/src/features/auth/services';
 import { UserSchema, PostSchema } from '@/src/shared/contracts/schemas';
@@ -34,12 +34,13 @@ export const fetchUserProfile = async (username: string): Promise<User> => {
 
     try {
         // Use the centralized user proxy
-        const data = await localGet<any>(`/api/users/${normalizedUsername}`);
+        const data = await localGet<unknown>(`/api/users/${normalizedUsername}`);
         
-        // Handle wrapped response
-        const userData = data.user || data.data || data;
+        // Handle wrapped response with type guard
+        const dataAsRecord = data as Record<string, unknown>;
+        const userData = dataAsRecord.user || dataAsRecord.data || data;
         return UserSchema.parse(userData);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Failed to fetch user profile:', error);
         throw error;
     }
@@ -52,11 +53,15 @@ export const fetchUserPosts = async (username: string): Promise<ProfilePost[]> =
     const normalizedUsername = username.startsWith('@') ? username.substring(1) : username;
     
     // Proxy through feed to get posts for a user
-    const response = await localGet<any>(`/api/feed/users/${normalizedUsername}/posts`);
+    const response = await localGet<unknown>(`/api/feed/users/${normalizedUsername}/posts`);
     
-    const postsData = response?.results || response?.posts || (Array.isArray(response) ? response : []);
+    // Handle potentially wrapped response with type guard
+    const responseAsRecord = response as Record<string, unknown>;
+    const postsData = responseAsRecord.results || responseAsRecord.posts || (Array.isArray(response) ? response : []);
     
-    return postsData.map((p: any) => PostSchema.parse(p));
+    // Ensure postsData is an array before mapping
+    const postsArray = Array.isArray(postsData) ? postsData : [];
+    return postsArray.map((p: unknown) => PostSchema.parse(p));
 };
 
 /**
