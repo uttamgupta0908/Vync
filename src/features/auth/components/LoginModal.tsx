@@ -42,12 +42,16 @@ export default function LoginModal() {
                 });
                 closeLoginModal();
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Auth failed:', error);
             // Show error to user
-            const errorMsg = error.response?.data?.details
-                ? JSON.stringify(error.response.data.details)
-                : (error.response?.data?.error || 'Authentication failed');
+            let errorMsg = 'Authentication failed';
+            if (typeof error === 'object' && error !== null && 'response' in error) {
+                const axiosError = error as { response?: { data?: { details?: unknown; error?: string } } };
+                errorMsg = axiosError.response?.data?.details
+                    ? JSON.stringify(axiosError.response.data.details)
+                    : (axiosError.response?.data?.error || 'Authentication failed');
+            }
             alert(errorMsg);
         }
     };
