@@ -10,13 +10,15 @@ export async function GET() {
         return NextResponse.json({
             user: response.data
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         // If 401 even after retry, return null user (not logged in)
-        if (error.response?.status === 401) {
-            return NextResponse.json({ user: null });
+        if (typeof error === 'object' && error !== null && 'response' in  error) {
+            const axiosError = error as { response?: { status?: number; data?: unknown }; message?: string };
+            if (axiosError.response?.status === 401) {
+                return NextResponse.json({ user: null });
+            }
+            console.error('Fetch me error:', axiosError.response?.data || axiosError.message);
         }
-        
-        console.error('Fetch me error:', error.response?.data || error.message);
         return NextResponse.json({ user: null }); // Fail safe to null
     }
 }

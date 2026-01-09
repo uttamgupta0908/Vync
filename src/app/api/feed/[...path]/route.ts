@@ -32,32 +32,42 @@ async function proxyRequest(
         const responseData = response?.data || {};
         console.log(`[Feed Proxy Debug] SUCCESS ${backendPath}: ${Object.keys(responseData).length} keys in response`);
         return NextResponse.json(responseData);
-    } catch (error: any) {
+    } catch (error: unknown) {
         const { message } = mapError(error);
+        const axiosError = error as { response?: { status?: number; data?: unknown }; message?: string };
         console.error(`[Feed Proxy Debug] ERROR ${method.toUpperCase()} ${backendPath}:`, {
-            status: error.response?.status,
-            data: error.response?.data,
-            message: error.message
+            status: axiosError.response?.status,
+            data: axiosError.response?.data,
+            message: axiosError.message
         });
         
         return NextResponse.json(
             { 
                 error: message, 
-                details: error.response?.data || error.message 
+                details: axiosError.response?.data || axiosError.message 
             },
-            { status: error.response?.status || 500 }
+            { status: axiosError.response?.status || 500 }
         );
     }
 }
 
-export async function GET(req: Request, ctx: any) {
+export async function GET(
+    req: Request,
+    ctx: { params: Promise<{ path: string[] }> }
+) {
     return proxyRequest(req, ctx, 'get');
 }
 
-export async function POST(req: Request, ctx: any) {
+export async function POST(
+    req: Request,
+    ctx: { params: Promise<{ path: string[] }> }
+) {
     return proxyRequest(req, ctx, 'post');
 }
 
-export async function DELETE(req: Request, ctx: any) {
+export async function DELETE(
+    req: Request,
+    ctx: { params: Promise<{ path: string[] }> }
+) {
     return proxyRequest(req, ctx, 'delete');
 }

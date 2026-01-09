@@ -23,14 +23,26 @@ export async function POST(request: Request) {
             refresh 
         });
     } catch (error: unknown) {
-        const err = error as { response?: { data?: any; status?: number }; message?: string };
-        console.error('Login error:', err.response?.data || err.message);
+        let errorData: { error?: string } = {};
+        let statusCode = 500;
+        let errorMessage: string | undefined;
+        
+        if (typeof error === 'object' && error !== null && 'response' in error) {
+            const axiosError = error as { response?: { data?: unknown; status?: number }; message?: string };
+            errorData = axiosError.response?.data as { error?: string } || {};
+            statusCode = axiosError.response?.status || 500;
+            errorMessage = axiosError.message;
+        } else if (error instanceof Error) {
+            errorMessage = error.message;
+        }
+        
+        console.error('Login error:', errorData || errorMessage);
         return NextResponse.json(
             { 
                 error: 'Authentication failed',
-                details: err.response?.data || err.message 
+                details: errorData || errorMessage 
             },
-            { status: err.response?.status || 500 }
+            { status: statusCode }
         );
     }
 }

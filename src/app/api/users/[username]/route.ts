@@ -14,8 +14,9 @@ export async function GET(
         // backendClient automatically handles Authorization header from cookies
         const response = await backendClient.get(VYNC_API.AUTH.USERS(username));
         return NextResponse.json(response.data);
-    } catch (error: any) {
-        if (error.response?.status === 404) {
+    } catch (error: unknown) {
+        const axiosError = error as { response?: { status?: number; data?: unknown } };
+        if (axiosError.response?.status === 404) {
             // Attempt 2: Public User Profile if different from Auth profile
             const publicUrl = VYNC_API.USERS.PUBLIC_PROFILE(username);
             
@@ -23,8 +24,9 @@ export async function GET(
                 try {
                     const response = await backendClient.get(publicUrl);
                     return NextResponse.json(response.data);
-                } catch (fallbackError: any) {
-                    if (fallbackError.response?.status === 404) {
+                } catch (fallbackError: unknown) {
+                    const fbError = fallbackError as { response?: { status?: number } };
+                    if (fbError.response?.status === 404) {
                         return NextResponse.json({ error: 'User not found' }, { status: 404 });
                     }
                 }
@@ -32,9 +34,10 @@ export async function GET(
         }
         
         const { message } = mapError(error);
+        const errWithResponse = error as { response?: { data?: unknown; status?: number }; message?: string };
         return NextResponse.json(
-            { error: message, details: error.response?.data || error.message }, 
-            { status: error.response?.status || 500 }
+            { error: message, details: errWithResponse.response?.data || errWithResponse.message }, 
+            { status: errWithResponse.response?.status || 500 }
         );
     }
 }
