@@ -9,6 +9,7 @@ A beautiful, feature-rich social media dashboard built with Next.js, featuring a
 ## ✨ Features
 
 - **Modern UI/UX**: Clean, premium design with smooth animations and transitions
+- **Dark Mode**: Production-ready dark theme with semantic color system
 - **Responsive Layout**: Optimized for desktop, tablet, and mobile devices
 - **Component Architecture**: Modular, reusable components organized by feature
 - **Type-Safe**: Built with TypeScript for better developer experience
@@ -53,33 +54,24 @@ pnpm dev
 
 ```
 Vync/
-├── app/                      # Next.js app directory
-│   ├── page.tsx             # Home page
-│   ├── layout.tsx           # Root layout
-│   └── details/[id]/        # Post details pages
-├── components/
-│   ├── ui/                  # Reusable UI components
-│   │   ├── Avatar.tsx
-│   │   └── IconButton.tsx
-│   ├── layout/              # Layout components
-│   │   ├── HomeHeader.tsx
-│   │   ├── Sidebar.tsx
-│   │   ├── RightSidebar.tsx
-│   │   └── BottomNav.tsx
-│   └── features/            # Feature-specific components
-│       ├── feed/
-│       │   └── Feed.tsx
-│       ├── post/
-│       │   └── PostCard.tsx
-│       └── home/
-│           └── HomeLeftSidebar.tsx
-├── data/
-│   └── mock.ts              # Mock data for development
-└── types/
-    └── index.ts             # TypeScript type definitions
+├── src/
+│   ├── app/                 # Next.js app directory (Routes)
+│   ├── features/            # Feature-based architecture
+│   │   ├── auth/            # Authentication & User management
+│   │   ├── feed/            # Feed, Posts, & Interactions
+│   │   ├── communities/     # Community features
+│   │   └── ...
+│   ├── shared/              # Shared resources
+│   │   ├── ui/              # Reusable atoms (Avatar, Buttons, Inputs)
+│   │   ├── layout/          # Layout components (Sidebar, Header)
+│   │   ├── styles/          # Global styles & Theme definitions
+│   │   └── lib/             # Providers & Configuration
+│   └── utils/               # Helper functions
 ```
 
 ## 🎨 Design System
+
+> **[View Theming Documentation](THEMING.md)** for detailed usage guides.
 
 ### Colors
 - **Primary**: Purple (`#8B5CF6`)
