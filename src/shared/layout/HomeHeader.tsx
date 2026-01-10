@@ -2,15 +2,17 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, Bell, Plus, LogOut, User, Settings, ChevronDown } from 'lucide-react';
+import { Search, Bell, Plus, LogOut, User, Settings, ChevronDown, Moon, Sun } from 'lucide-react';
 import { Avatar } from '@/src/shared/ui';
 import { useAuth, useLogout } from '@/src/features/auth/hooks/useAuth';
 import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
+import { useTheme } from '@/src/shared/lib/ThemeProvider';
 
 export default function HomeHeader() {
     const { isAuthenticated, user, isLoading } = useAuth();
     const { openLoginModal } = useAuthUI();
     const { mutate: logout } = useLogout();
+    const { theme, setTheme } = useTheme();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -127,7 +129,7 @@ export default function HomeHeader() {
 
                             {/* Dropdown Menu */}
                             {isMenuOpen && (
-                                <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-2xl shadow-xl border border-neutral-200 overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+                                <div className="absolute right-0 top-full mt-2 w-64 bg-neutral-100 rounded-2xl shadow-xl border border-neutral-200 overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right">
                                     <div className="p-4 border-b border-neutral-100 bg-neutral-50/50">
                                         <p className="font-bold text-neutral-800 truncate">{user?.full_name}</p>
                                         <p className="text-xs text-neutral-500 truncate"> @{user?.username || 'user'}</p>
@@ -142,6 +144,21 @@ export default function HomeHeader() {
                                             <Settings className="w-4 h-4" />
                                             Settings
                                         </Link>
+
+                                        <div className="h-px bg-neutral-200 mx-3 my-1" />
+
+                                        <button
+                                            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                                            className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-neutral-700 hover:bg-neutral-200 rounded-xl transition-colors"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                                                <span>Dark Mode</span>
+                                            </div>
+                                            <div className={`relative w-9 h-5 rounded-full transition-colors duration-200 ${theme === 'dark' ? 'bg-primary-300' : 'bg-neutral-500'}`}>
+                                                <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-200 ${theme === 'dark' ? 'translate-x-4' : 'translate-x-0'}`} />
+                                            </div>
+                                        </button>
                                     </div>
 
                                     <div className="p-2 border-t border-neutral-100">

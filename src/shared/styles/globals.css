@@ -1,17 +1,62 @@
 @import "tailwindcss";
 
-@theme {
-  /* Palette */
-  --color-neutral-100: #FFFFFF;
-  --color-neutral-200: rgba(200, 162, 200, 0.15);
-  --color-neutral-300: #E3E3E3;
-  --color-neutral-400: #F5F5F5;
-  --color-neutral-500: #CCC;
-  --color-neutral-600: #8E8E93;
-  --color-neutral-700: #3C3836;
-  --color-neutral-800: #191015;
-  --color-neutral-900: #000000;
+@layer base {
+  :root {
+    /* LIGHT THEME (Default) */
+    --neutral-50: #FAFAFA;
+    --neutral-100: #FFFFFF;
+    --neutral-200: rgba(200, 162, 200, 0.15);
+    --neutral-300: #E3E3E3;
+    --neutral-400: #F5F5F5;
+    --neutral-500: #AAAAAA; /* Mid-gray match */
+    --neutral-600: #8E8E93;
+    --neutral-700: #3C3836;
+    --neutral-800: #1C1D21;
+    --neutral-900: #000000;
 
+    /* Semantic Alerts (Light) */
+    --angry-100: #F2D6CD;
+    --success-100: #D1FAE5;
+  }
+
+  /* DARK THEME Overrides */
+  .dark {
+    /* Palette Swap Logic */
+    --neutral-50: #1C1D21; /* Match Card Dark */
+    --neutral-100: #1C1D21; /* Cards -> Dark */
+    --neutral-200: rgba(200, 162, 200, 0.15); /* Tint stays */
+    --neutral-300: #3c3836; /* Borders -> Dark Gray */
+    --neutral-400: #000000; /* Background -> Deep Black */
+    --neutral-500: #666666; /* Dim text -> Adjusted */
+    --neutral-600: #E3E3E3; /* Sec Text -> Light */
+    --neutral-700: #F5F5F5; /* Inverse Border -> Light */
+    --neutral-800: #FFFFFF; /* Text -> White */
+    --neutral-900: #F5F5F5; /* Inverse Buttons -> White */
+
+    /* Generic Inverse for safety */
+    background-color: var(--neutral-400);
+    color: var(--neutral-800);
+
+    /* Semantic Alerts (Dark) */
+    --angry-100: #421000;
+    --success-100: #022c1e;
+  }
+}
+
+@theme {
+  /* Dynamic Palette referencing CSS Variables */
+  --color-neutral-50: var(--neutral-50);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-500: var(--neutral-500);
+  --color-neutral-600: var(--neutral-600);
+  --color-neutral-700: var(--neutral-700);
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-900: var(--neutral-900);
+
+  /* Primitives (Constant) */
   --color-primary-100: #4537B3;
   --color-primary-200: #6650E5;
   --color-primary-300: #8769FB;
@@ -31,27 +76,31 @@
   --color-accent-400: #FBC878;
   --color-accent-500: #FF9500;
 
-  --color-angry-100: #F2D6CD;
+  --color-angry-100: var(--angry-100); /* Dynamic */
   --color-angry-500: #C03403;
 
-  --color-success-100: #D1FAE5;
+  --color-success-100: var(--success-100); /* Dynamic */
   --color-success-400: #34D399;
   --color-success-500: #10B981;
 
   --color-disabled: #5F5489;
 
-  --color-overlay-20: rgba(25, 16, 21, 0.2);
-  --color-overlay-50: rgba(25, 16, 21, 0.5);
+  --color-overlay-20: rgba(255, 255, 255, 0.2);
+  --color-overlay-50: rgba(255, 255, 255, 0.5);
 
-  /* Semantic Colors */
+  /* Semantic Mappings */
+  /* These point to the *already swapped* neutral palette variables */
+  /* So Semantic Variables just point to the standard slots */
+  
   --color-text: var(--color-neutral-800);
   --color-text-inverse: var(--color-neutral-100);
   --color-text-dim: var(--color-neutral-600);
   --color-background: var(--color-neutral-100);
-  --color-border: var(--color-neutral-400);
+  --color-border: var(--color-neutral-300);
   --color-tint: var(--color-primary-500);
   --color-tint-inactive: var(--color-neutral-300);
   --color-separator: var(--color-neutral-300);
+  
   --color-error: var(--color-angry-500);
   --color-error-background: var(--color-angry-100);
 }
@@ -66,11 +115,11 @@
   }
   
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: var(--color-neutral-500);
+    background-color: var(--color-neutral-600);
     border-radius: 20px;
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-neutral-600);
+    background-color: var(--color-neutral-500);
   }
 }

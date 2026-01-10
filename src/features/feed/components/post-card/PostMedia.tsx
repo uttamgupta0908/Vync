@@ -27,7 +27,7 @@ export default function PostMedia({ media, isDetail = false }: PostMediaProps) {
                         <video
                             src={item.url}
                             controls
-                            className="w-full h-auto max-h-[600px] bg-black"
+                            className="w-full h-auto max-h-[600px] bg-neutral-400"
                             poster={item.thumbnail_url}
                         />
                     )}

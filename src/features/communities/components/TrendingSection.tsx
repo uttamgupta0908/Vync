@@ -12,7 +12,7 @@ export default function TrendingSection() {
 
     if (isError) {
         return (
-            <div className="py-20 text-center bg-white/50 backdrop-blur-sm rounded-[32px] border border-dashed border-neutral-200">
+            <div className="py-20 text-center bg-neutral-100/50 backdrop-blur-sm rounded-[32px] border border-dashed border-neutral-200">
                 <p className="text-neutral-500 font-medium italic">Unable to load trending communities at the moment.</p>
             </div>
         );

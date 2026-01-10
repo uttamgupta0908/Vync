@@ -26,7 +26,7 @@ export default function ErrorState({
                 {retry && (
                     <button
                         onClick={retry}
-                        className="px-6 py-3 bg-primary-300 hover:bg-primary-200 text-white rounded-xl font-bold transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 mx-auto shadow-sm"
+                        className="px-6 py-3 bg-primary-300 hover:bg-primary-200 text-neutral-100 rounded-xl font-bold transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2 mx-auto shadow-sm"
                     >
                         <RefreshCw className="w-4 h-4" />
                         Try Again

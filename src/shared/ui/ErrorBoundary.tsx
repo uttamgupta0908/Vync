@@ -38,7 +38,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
             return (
                 <div className="min-h-screen flex items-center justify-center bg-neutral-50 p-4">
-                    <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
+                    <div className="max-w-md w-full bg-neutral-100 rounded-2xl shadow-xl p-8 text-center">
                         <div className="w-16 h-16 bg-angry-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <svg
                                 className="w-8 h-8 text-angry-500"
@@ -62,7 +62,7 @@ export class ErrorBoundary extends Component<Props, State> {
                         </p>
                         <button
                             onClick={() => window.location.reload()}
-                            className="px-6 py-3 bg-primary-300 hover:bg-primary-200 text-white font-bold rounded-xl transition-colors"
+                            className="px-6 py-3 bg-primary-300 hover:bg-primary-200 text-neutral-100 font-bold rounded-xl transition-colors"
                         >
                             Refresh Page
                         </button>

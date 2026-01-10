@@ -46,7 +46,7 @@ export default function MessageList({ conversations, selectedId, onSelect }: Mes
                             <div className="relative shrink-0">
                                 <Avatar src={conversation.userAvatar} alt={conversation.userName} size="lg" />
                                 {conversation.online && (
-                                    <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-[2.5px] border-white rounded-full"></span>
+                                    <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-[2.5px] border-neutral-100 rounded-full"></span>
                                 )}
                             </div>
                             <div className="flex-1 min-w-0 pt-0.5">

@@ -191,7 +191,7 @@ export function LiveRoomSkeleton() {
 export function PostDetailSkeleton() {
     return (
         <div className="flex-1 min-h-screen flex flex-col pb-20 sm:pb-0 bg-neutral-100 animate-pulse">
-            <div className="h-16 border-b border-neutral-300 w-full bg-white mb-6" />
+            <div className="h-16 border-b border-neutral-300 w-full bg-neutral-100 mb-6" />
             <div className="px-14 p-6 space-y-4">
                 {/* Main Post Card Skeleton */}
                 <div className="bg-neutral-100 rounded-2xl p-4 shadow-sm">

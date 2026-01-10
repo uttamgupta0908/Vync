@@ -33,7 +33,7 @@ export default function ChatWindow({ conversationId, messages, isLoading }: Chat
 
     if (!conversationId) {
         return (
-            <div className="flex-1 flex items-center justify-center bg-white rounded-2xl">
+            <div className="flex-1 flex items-center justify-center bg-neutral-100 rounded-2xl">
                 <p className="text-neutral-600">Select a conversation to start messaging</p>
             </div>
         );
@@ -57,7 +57,7 @@ export default function ChatWindow({ conversationId, messages, isLoading }: Chat
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-8 space-y-8 bg-white">
+            <div className="flex-1 overflow-y-auto p-8 space-y-8 bg-neutral-100">
                 {isLoading ? (
                     <div className="flex items-center justify-center h-full">
                         <Spinner />
@@ -93,8 +93,8 @@ export default function ChatWindow({ conversationId, messages, isLoading }: Chat
             </div>
 
             {/* Input Area */}
-            <div className="p-6 pt-2 bg-white sticky bottom-0">
-                <div className="flex items-end gap-3 p-2 bg-white border border-neutral-300 rounded-2xl shadow-sm focus-within:ring-2 focus-within:ring-primary-300/20 focus-within:border-primary-300 transition-all">
+            <div className="p-6 pt-2 bg-neutral-100 sticky bottom-0">
+                <div className="flex items-end gap-3 p-2 bg-neutral-100 border border-neutral-300 rounded-2xl shadow-sm focus-within:ring-2 focus-within:ring-primary-300/20 focus-within:border-primary-300 transition-all">
                     <button className="p-3 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-colors mb-0.5">
                         <Plus className="w-5 h-5" />
                     </button>

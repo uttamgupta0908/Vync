@@ -97,7 +97,7 @@ export default function HomeLeftSidebar() {
                         <p className="text-xs text-neutral-600 mb-4">Sign up now to get your own personalized timeline!</p>
                         <button
                             onClick={openLoginModal}
-                            className="w-full bg-neutral-900 text-white font-bold py-2 rounded-xl hover:bg-neutral-800 transition-colors"
+                            className="w-full bg-neutral-800 text-neutral-100 font-bold py-2 rounded-xl hover:bg-neutral-600 transition-colors"
                         >
                             Sign Up
                         </button>

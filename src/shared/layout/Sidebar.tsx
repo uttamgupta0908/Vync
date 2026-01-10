@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Search, Users, MessageSquare, Bell, Bookmark, Trophy } from 'lucide-react';
-import { currentUser } from '@/src/shared/data/mock';
 import { Avatar } from '@/src/shared/ui';
 import { useAuthUI } from '@/src/features/auth/hooks/useAuthUI';
 import { useAuth } from '@/src/features/auth/hooks/useAuth';
@@ -25,7 +24,7 @@ interface SidebarProps {
 
 export default function Sidebar({ showLogo = false, fullHeight = false }: SidebarProps) {
     const pathname = usePathname();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, user } = useAuth();
     const { openLoginModal } = useAuthUI();
 
 
@@ -91,20 +90,22 @@ export default function Sidebar({ showLogo = false, fullHeight = false }: Sideba
 
 
             {/* Fixed Footer */}
-            <div className="p-4 border-t border-neutral-300">
-                <button className="flex items-center gap-3 p-3 w-full rounded-xl hover:bg-neutral-300 transition-colors text-left group">
-                    <Avatar
-                        src={currentUser.avatar_url}
-                        alt={currentUser.full_name}
-                        size="md"
-                        className="ring-2 ring-transparent group-hover:ring-primary-300/20 transition-all"
-                    />
-                    <div className="flex-1 min-w-0">
-                        <p className="font-bold text-neutral-800 text-sm truncate group-hover:text-primary-300 transition-colors">{currentUser.name}</p>
-                        <p className="text-xs text-neutral-600 truncate">{currentUser.handle}</p>
-                    </div>
-                </button>
-            </div>
+            {isAuthenticated && user && (
+                <div className="p-4 border-t border-neutral-300">
+                    <Link href={`/profile/${user.username}`} className="flex items-center gap-3 p-3 w-full rounded-xl hover:bg-neutral-300 transition-colors text-left group">
+                        <Avatar
+                            src={user.avatar_url || ''}
+                            alt={user.full_name || 'User'}
+                            size="md"
+                            className="ring-2 ring-transparent group-hover:ring-primary-300/20 transition-all"
+                        />
+                        <div className="flex-1 min-w-0">
+                            <p className="font-bold text-neutral-800 text-sm truncate group-hover:text-primary-300 transition-colors">{user.full_name || user.username}</p>
+                            <p className="text-xs text-neutral-600 truncate">@{user.username}</p>
+                        </div>
+                    </Link>
+                </div>
+            )}
         </aside>
     );
 }
